@@ -9,6 +9,10 @@ html {
     background-color: var(--color-background);
 }
 
+body {
+    margin: 0;
+}
+
 .suitam-text-size-large {
     font-size: 2.5rem;
 }
