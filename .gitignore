@@ -1,0 +1,6 @@
+.venv
+**/__pycache__/
+**/migrations/
+data-structures
+db.sqlite3
+guides
