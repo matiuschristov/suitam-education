@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include "global/head.html" %}
+        <link rel="stylesheet" type="text/css" href="{% static 'extra.css' %}" />
+        <title>Suitam</title>
+    </head>
+    <body>
+        <h1>Color Scheme</h1>
+        <div class="container-color-scheme">
+            <div class="color-scheme-block" style="background-color: var(--color-default-red);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-orange);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-yellow);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-green);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-mint);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-teal);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-cyan);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-blue);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-indigo);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-purple);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-pink);"></div>
+            <div class="color-scheme-block" style="background-color: var(--color-default-brown);"></div>
+        </div>
+    </body>
+</html>
