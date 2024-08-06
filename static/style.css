@@ -85,6 +85,14 @@ body {
     font-weight: light;
 }
 
+.suitam-text-size-xxlarge {
+    font-size: 4rem;
+}
+
+.suitam-text-size-xlarge {
+    font-size: 3rem;
+}
+
 .suitam-text-size-large {
     font-size: 2.5rem;
 }
