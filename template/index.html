@@ -1,19 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
     <head>
-        <meta charset="UTF-8">
-        <title>Render Example</title>
-        <style>
-            html {
-                font-family: Arial, Helvetica, sans-serif;
-            }
-        </style>
+        {% include "global/head.html" %}
+        <title>Suitam</title>
     </head>
-
     <body>
         <h1>{{ message }}</h1>
         {% include "includes/button.html" %}
     </body>
-
 </html>
