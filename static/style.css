@@ -1,6 +1,32 @@
 :root {
     --color-text: #000;
     --color-background: #fff;
+    --color-property-opacity: 1;
+    --color: rgba(68, 68, 68, var(--color-property-opacity));
+    --color-light-red: rgba(255, 59, 48, var(--color-property-opacity));
+    --color-dark-red: rgba(255, 69, 58, var(--color-property-opacity));
+    --color-light-orange: rgba(255, 149, 0, var(--color-property-opacity));
+    --color-dark-orange: rgba(255, 159, 10, var(--color-property-opacity));
+    --color-light-yellow: rgba(255, 204, 0, var(--color-property-opacity));
+    --color-dark-yellow: rgba(255, 214, 10, var(--color-property-opacity));
+    --color-light-green: rgba(52, 199, 89, var(--color-property-opacity));
+    --color-dark-green: rgba(48, 209, 88, var(--color-property-opacity));
+    --color-light-mint: rgba(0, 199, 190, var(--color-property-opacity));
+    --color-dark-mint: rgba(99, 230, 226, var(--color-property-opacity));
+    --color-light-teal: rgba(48, 176, 199, var(--color-property-opacity));
+    --color-dark-teal: rgba(64, 200, 224, var(--color-property-opacity));
+    --color-light-cyan: rgba(50, 173, 230, var(--color-property-opacity));
+    --color-dark-cyan: rgba(100, 210, 255, var(--color-property-opacity));
+    --color-light-blue: rgba(0, 122, 255, var(--color-property-opacity));
+    --color-dark-blue: rgba(10, 132, 255, var(--color-property-opacity));
+    --color-light-indigo: rgba(88, 86, 214, var(--color-property-opacity));
+    --color-dark-indigo: rgba(94, 92, 230, var(--color-property-opacity));
+    --color-light-purple: rgba(175, 82, 222, var(--color-property-opacity));
+    --color-dark-purple: rgba(191, 90, 242, var(--color-property-opacity));
+    --color-light-pink: rgba(255, 45, 85, var(--color-property-opacity));
+    --color-dark-pink: rgba(255, 55, 95, var(--color-property-opacity));
+    --color-light-brown: rgba(162, 132, 94, var(--color-property-opacity));
+    --color-dark-brown: rgba(172, 142, 104, var(--color-property-opacity));
 }
 
 html {
