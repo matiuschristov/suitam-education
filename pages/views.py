@@ -11,6 +11,9 @@ import urllib
 def view_home(request):
     return HttpResponse('Suitam home page')
 
+def view_test(request):
+    return render(request, 'test.html')
+
 def view_user_login(request):
     if request.POST:
         login_details = urllib.parse.parse_qs(request.body.decode("utf-8"))
