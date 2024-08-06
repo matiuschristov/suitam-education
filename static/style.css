@@ -27,6 +27,18 @@
     --color-dark-pink: rgba(255, 55, 95, var(--color-property-opacity));
     --color-light-brown: rgba(162, 132, 94, var(--color-property-opacity));
     --color-dark-brown: rgba(172, 142, 104, var(--color-property-opacity));
+    --color-default-red: var(--color-light-red);
+    --color-default-orange: var(--color-light-orange);
+    --color-default-yellow: var(--color-light-yellow);
+    --color-default-green: var(--color-light-green);
+    --color-default-mint: var(--color-light-mint);
+    --color-default-teal: var(--color-light-teal);
+    --color-default-cyan: var(--color-light-cyan);
+    --color-default-blue: var(--color-light-blue);
+    --color-default-indigo: var(--color-light-indigo);
+    --color-default-purple: var(--color-light-purple);
+    --color-default-pink: var(--color-light-pink);
+    --color-default-brown: var(--color-light-brown);
 }
 
 html {
@@ -75,5 +87,17 @@ body {
     :root {
         --color-text: #fff;
         --color-background: #000;
+        --color-default-red: var(--color-dark-red);
+        --color-default-orange: var(--color-dark-orange);
+        --color-default-yellow: var(--color-dark-yellow);
+        --color-default-green: var(--color-dark-green);
+        --color-default-mint: var(--color-dark-mint);
+        --color-default-teal: var(--color-dark-teal);
+        --color-default-cyan: var(--color-dark-cyan);
+        --color-default-blue: var(--color-dark-blue);
+        --color-default-indigo: var(--color-dark-indigo);
+        --color-default-purple: var(--color-dark-purple);
+        --color-default-pink: var(--color-dark-pink);
+        --color-default-brown: var(--color-dark-brown);
     }
 }
