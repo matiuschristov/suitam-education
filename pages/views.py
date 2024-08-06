@@ -14,6 +14,9 @@ def view_home(request):
 def view_test(request):
     return render(request, 'test.html')
 
+def view_test_color_scheme(request):
+    return render(request, 'color-scheme.html')
+
 def view_user_login(request):
     if request.POST:
         login_details = urllib.parse.parse_qs(request.body.decode("utf-8"))
