@@ -1,9 +1,11 @@
 .container-color-scheme {
-
+    display: flex;
+    gap: 20px;
+    padding: 20px;
 }
 
 .color-scheme-block {
-    width: 32px;
-    height: 32px;
+    width: 100px;
+    height: 100px;
     border-radius: 10px;
 }
