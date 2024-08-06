@@ -13,6 +13,22 @@ body {
     margin: 0;
 }
 
+.suitam-text-weight-bold {
+    font-weight: bold;
+}
+
+.suitam-text-weight-medium {
+    font-weight: medium;
+}
+
+.suitam-text-weight-normal {
+    font-weight: normal;
+}
+
+.suitam-text-weight-light {
+    font-weight: light;
+}
+
 .suitam-text-size-large {
     font-size: 2.5rem;
 }
