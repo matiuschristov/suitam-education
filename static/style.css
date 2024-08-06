@@ -9,6 +9,22 @@ html {
     background-color: var(--color-background);
 }
 
+.suitam-text-size-large {
+    font-size: 2.5rem;
+}
+
+.suitam-text-size-medium {
+    font-size: 1.8rem
+}
+
+.suitam-text-size-regular {
+    font-size: 1.4rem;
+}
+
+.suitam-text-size-small {
+    font-size: 1.2rem
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --color-text: #fff;
