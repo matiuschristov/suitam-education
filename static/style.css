@@ -27,6 +27,18 @@
     --color-dark-pink: 255, 55, 95;
     --color-light-brown: 162, 132, 94;
     --color-dark-brown: 172, 142, 104;
+    --color-light-gray: 142, 142, 147;
+    --color-dark-gray: 142, 142, 147;
+    --color-light-gray2: 174, 174, 178;
+    --color-dark-gray2: 99, 99, 102;
+    --color-light-gray3: 199, 199, 204;
+    --color-dark-gray3: 72, 72, 74;
+    --color-light-gray4: 209, 209, 214;
+    --color-dark-gray4: 58, 58, 60;
+    --color-light-gray5: 229, 229, 234;
+    --color-dark-gray5: 44, 44, 46;
+    --color-light-gray6: 242, 242, 247;
+    --color-dark-gray6: 28, 28, 30;
     --color-default-red: var(--color-light-red);
     --color-default-orange: var(--color-light-orange);
     --color-default-yellow: var(--color-light-yellow);
@@ -39,6 +51,12 @@
     --color-default-purple: var(--color-light-purple);
     --color-default-pink: var(--color-light-pink);
     --color-default-brown: var(--color-light-brown);
+    --color-default-gray: var(--color-light-gray);
+    --color-default-gray2: var(--color-light-gray2);
+    --color-default-gray3: var(--color-light-gray3);
+    --color-default-gray4: var(--color-light-gray4);
+    --color-default-gray5: var(--color-light-gray5);
+    --color-default-gray6: var(--color-light-gray6);
 }
 
 html {
@@ -99,5 +117,11 @@ body {
         --color-default-purple: var(--color-dark-purple);
         --color-default-pink: var(--color-dark-pink);
         --color-default-brown: var(--color-dark-brown);
+        --color-default-gray: var(--color-dark-gray);
+        --color-default-gray2: var(--color-dark-gray2);
+        --color-default-gray3: var(--color-dark-gray3);
+        --color-default-gray4: var(--color-dark-gray4);
+        --color-default-gray5: var(--color-dark-gray5);
+        --color-default-gray6: var(--color-dark-gray6);
     }
 }
