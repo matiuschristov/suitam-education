@@ -1,6 +1,6 @@
 :root {
     --color-text: #000;
-    --color-background: #fff;
+    --color-background: rgb(246, 246, 246);
     --color-property-opacity: 1;
     --color: rgba(68, 68, 68, var(--color-property-opacity,1));
     --color-light-red: 255, 59, 48;
@@ -69,50 +69,51 @@ body {
     margin: 0;
 }
 
-.suitam-text-weight-bold {
+.text-weight-bold {
     font-weight: bold;
 }
 
-.suitam-text-weight-medium {
-    font-weight: medium;
+.text-weight-medium {
+    font-weight: 500;
 }
 
-.suitam-text-weight-normal {
+.text-weight-normal {
     font-weight: normal;
 }
 
-.suitam-text-weight-light {
+.text-weight-light {
     font-weight: light;
 }
 
-.suitam-text-size-xxlarge {
+.text-size-xxlarge {
     font-size: 4rem;
 }
 
-.suitam-text-size-xlarge {
+.text-size-xlarge {
     font-size: 3rem;
 }
 
-.suitam-text-size-large {
+.text-size-large {
     font-size: 2.5rem;
 }
 
-.suitam-text-size-medium {
+.text-size-medium {
     font-size: 1.8rem
 }
 
-.suitam-text-size-normal {
+.text-size-normal {
     font-size: 1.4rem;
 }
 
-.suitam-text-size-small {
+.text-size-small {
     font-size: 1.2rem
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
         --color-text: #fff;
-        --color-background: #000;
+        --color-background: rgb(30, 30, 30);
+        /* --color-background: #000; */
         --color-default-red: var(--color-dark-red);
         --color-default-orange: var(--color-dark-orange);
         --color-default-yellow: var(--color-dark-yellow);
