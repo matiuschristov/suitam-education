@@ -1,8 +1,8 @@
 :root {
-    --color-text: #000;
-    --color-background: rgb(246, 246, 246);
+    --color-text: 0, 0, 0;
+    --color-background: 246, 246, 246;
     --color-property-opacity: 1;
-    --color: rgba(68, 68, 68, var(--color-property-opacity,1));
+    --color: rgba(68, 68, 68, var(--color-property-opacity, 1));
     --color-light-red: 255, 59, 48;
     --color-dark-red: 255, 69, 58;
     --color-light-orange: 255, 149, 0;
@@ -61,8 +61,8 @@
 
 html {
     font: 400 10px/1.9 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--color-text);
-    background-color: var(--color-background);
+    color: rgb(var(--color-text));
+    background-color: rgb(var(--color-background));
 }
 
 body {
@@ -109,10 +109,124 @@ body {
     font-size: 1.2rem
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5em;
+}
+
+.login-container-header,
+.login-container form {
+    width: 100%;
+    max-width: 350px;
+}
+
+.login-container-header {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.form-field-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+.login-container .form-field-container:last-of-type {
+    margin-bottom: 3em;
+}
+
+.form-field-container label {
+    font-family: inherit;
+    font-size: 1.2rem;
+    color: rgba(var(--color-text));
+    margin-bottom: 5px;
+}
+
+.form-field-container input[type=text],
+.form-field-container input[type=password] {
+    border: 0;
+    outline: 0;
+    color: rgba(var(--color-text));
+    font-family: inherit;
+    font-size: 1.5rem;
+    background: none;
+    border: 1px solid rgb(var(--color-text), .2);
+    padding: 13px 15px;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border ease-in-out 200ms;
+}
+
+.form-field-container input:focus {
+    border-color: rgb(var(--color-default-blue));
+}
+
+.form-field-container-input-wrapper {
+    position: relative;
+    border-radius: 10px;
+}
+
+.form-field-container-input-wrapper::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border-radius: 10px;
+    box-shadow: 0 0 0 0.4rem rgb(var(--color-default-blue), 0.3);
+    transition: opacity ease-in-out 200ms;
+}
+
+.form-field-container-input-wrapper:has(input:focus)::after {
+    opacity: 1;
+}
+
+.login-container input[type=submit] {
+    border: none;
+    outline: 0;
+    color: rgba(var(--color-background));
+    font-family: inherit;
+    font-size: 1.3rem;
+    background: rgba(var(--color-text));
+    padding: 13px 15px;
+    border-radius: 10px;
+    width: 100%;
+    transition: background-color ease-in-out 500ms;
+}
+
+.login-container input[type=submit]:hover {
+    background: rgba(var(--color-text), .8);
+}
+
+.suitam-logo {
+    margin-right: 8px;
+    max-width: 64px;
+    width: 100%;
+    fill: rgba(var(--color-text));
+    display: inline-block;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-text: #fff;
-        --color-background: rgb(30, 30, 30);
+        --color-text: 255, 255, 255;
+        --color-background: 30, 30, 30;
         /* --color-background: #000; */
         --color-default-red: var(--color-dark-red);
         --color-default-orange: var(--color-dark-orange);
