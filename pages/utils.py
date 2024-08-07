@@ -18,3 +18,9 @@ def set_cookie(response, key, value, days_expire=7):
         domain=settings.SESSION_COOKIE_DOMAIN,
         secure=settings.SESSION_COOKIE_SECURE or None,
     )
+
+def delete_cookie(response, key):
+    response.delete_cookie(
+        key,
+        domain=settings.SESSION_COOKIE_DOMAIN,
+    )
