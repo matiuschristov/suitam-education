@@ -44,6 +44,12 @@ def view_user_logout(request):
     return response
 
 @require_authentication
+def view_overview(request):
+    return render(request, 'overview.html', {
+        'user': intranet.user_information(request)
+    })
+
+@require_authentication
 def view_user_profile(request):
     return render(request, 'user.html', {
         'user': intranet.user_information(request)
