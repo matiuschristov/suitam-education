@@ -9,7 +9,7 @@ import random
 import urllib
 
 def view_home(request):
-    return HttpResponse('Suitam home page')
+    return redirect('/overview/')
 
 def view_test(request):
     return render(request, 'test.html')
@@ -45,8 +45,33 @@ def view_user_logout(request):
 
 @require_authentication
 def view_overview(request):
+    user_information = intranet.user_information(request)
+    user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
+    
+    user_class_resources = intranet.class_resources(request)
+    user_classes = list()
+    for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
+        user_classes.append(user_class.get('SubjectDescription'))
+
+    def correct_capitalisation(subject):
+        subject = subject.lower().split(' ')
+        del subject[0:2]
+        updated = list()
+        keepLowerCase = ['and', 'at']
+        for x in subject:
+            if x == 'pe':
+                updated.append(x.upper())
+            elif x == 'it' or x == 'it:':
+                updated.append(x.upper())
+            elif [match for match in keepLowerCase if x in match]:
+                updated.append(x)
+            else:
+                updated.append(x.title())
+        return " ".join(updated)
+
     return render(request, 'overview.html', {
-        'user': intranet.user_information(request)
+        'user': user_information,
+        'classes': list(map(correct_capitalisation, user_classes))
     })
 
 @require_authentication
