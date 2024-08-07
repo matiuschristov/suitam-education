@@ -8,6 +8,7 @@ urlpatterns = [
     path('test/', views.view_test, name='test'),
     path('test/color-scheme/', views.view_test_color_scheme, name='Test.ColorScheme'),
     path('auth/login/', views.view_user_login, name='Auth.Login'),
+    path('auth/logout/', views.view_user_logout, name='Auth.Logout'),
     path('profile/', views.view_user_profile, name='UserProfile'),
     path('api/class/resources/', views.view_class_resources, name='API.ClassResources'),
     path('api/dashboard/data/', views.api_dashboard_data, name='API.DashboardData'),
