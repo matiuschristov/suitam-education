@@ -172,30 +172,7 @@ h6 {
 }
 
 .form-field-container input:focus {
-    border-color: rgb(var(--color-default-blue));
-}
-
-.form-field-container-input-wrapper {
-    position: relative;
-    border-radius: 10px;
-}
-
-.form-field-container-input-wrapper::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    border-radius: 10px;
-    box-shadow: 0 0 0 0.4rem rgb(var(--color-default-blue), 0.3);
-    transition: opacity ease-in-out 200ms;
-}
-
-.form-field-container-input-wrapper:has(input:focus)::after {
-    opacity: 1;
+    border: 1px solid rgb(var(--color-text), .4);
 }
 
 .login-container input[type=submit] {
