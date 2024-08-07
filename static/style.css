@@ -120,6 +120,8 @@ h6 {
     margin-block-end: 0;
 }
 
+/* LOGIN PAGE */
+
 .login-container {
     display: flex;
     flex-direction: column;
@@ -191,6 +193,8 @@ h6 {
 .login-container input[type=submit]:hover {
     background: rgba(var(--color-text), .8);
 }
+
+/* END LOGIN PAGE */
 
 .suitam-logo {
     margin-right: 8px;
