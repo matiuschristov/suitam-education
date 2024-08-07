@@ -37,6 +37,13 @@ def view_user_login(request):
         return render(request, 'login.html')
 
 @require_authentication
+def view_user_logout(request):
+    response = redirect('/auth/login/')
+    utils.delete_cookie(response, 'ASP.NET_SessionId')
+    utils.delete_cookie(response, 'adAuthCookie')
+    return response
+
+@require_authentication
 def view_user_profile(request):
     return render(request, 'user.html', {
         'user': intranet.user_information(request)
