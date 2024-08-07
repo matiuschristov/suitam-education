@@ -23,7 +23,7 @@ def view_user_login(request):
         if not login_details.get('username')[0] or not login_details.get('password')[0]:
             return HttpResponse('Login requires username and password')
         auth = intranet.login(login_details.get('username')[0], login_details.get('password')[0])
-        auth_redirect = redirect('/profile')
+        auth_redirect = redirect('/overview/')
         if auth:
             for header in auth:
                 utils.set_cookie(auth_redirect, header, auth[header], days_expire=7)
