@@ -51,24 +51,28 @@ def view_overview(request):
     user_class_resources = intranet.class_resources(request)
     user_classes = list()
     for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
-        user_classes.append(user_class.get('SubjectDescription'))
+        class_name = user_class.get('SubjectDescription').lower()
+        if class_name.endswith('assembly'):
+            continue;
+        elif class_name.endswith('pastoral care'):
+            continue;
+        user_classes.append(class_name)
 
     def correct_capitalisation(subject):
-        subject = subject.lower().split(' ')
+        subject = subject.split(' ')
         del subject[0:2]
         updated = list()
         keepLowerCase = ['and', 'at']
         for x in subject:
             if x == 'pe':
-                updated.append(x.upper())
+                x = x.upper()
             elif x == 'it' or x == 'it:':
-                updated.append(x.upper())
-            elif [match for match in keepLowerCase if x in match]:
-                updated.append(x)
-            else:
-                updated.append(x.title())
+                x = x.upper()
+            elif not [match for match in keepLowerCase if x in match]:
+                x = x.title()
+            updated.append(x)
         return " ".join(updated)
-
+    
     return render(request, 'overview.html', {
         'user': user_information,
         'classes': list(map(correct_capitalisation, user_classes))
