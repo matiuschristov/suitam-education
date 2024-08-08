@@ -196,6 +196,126 @@ h6 {
 
 /* END LOGIN PAGE */
 
+/* START HEADER DEFAULT */
+
+.header-default {
+    margin: 3rem 2.5rem 1rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-default-info {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.header-default-page-name {
+    letter-spacing: 0.5px;
+    line-height: 1.2em;
+}
+
+.header-default-page-date {
+    margin-right: 1rem;
+    color: rgba(var(--color-default-gray));
+}
+
+.header-default-profile-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(var(--color-default-gray3));
+}
+
+.header-default-profile-initals {
+    font-weight: 400;
+    font-size: 2.2em;
+}
+
+/* END HEADER DEFAULT */
+
+.class-grid-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+.class-grid-column .class-grid-row:nth-child(1) {
+    max-width: calc(200px * 3 + 1rem * 2);
+}
+.class-grid-column .class-grid-row:nth-child(2) {
+    max-width: calc(200px * 2 + 1rem * 1);
+}
+
+.class-grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.class-grid-item {
+    border-radius: 8px;
+    min-width: 200px;
+    min-height: 135px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.class-grid-column .class-grid-row:nth-child(1) .class-grid-item:nth-child(1) {
+    background: rgba(var(--color-default-red), .7);
+    border-top-left-radius: 40px 20px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.class-grid-column .class-grid-row:nth-child(1) .class-grid-item:nth-child(2) {
+    background: rgba(var(--color-default-yellow), .7);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+.class-grid-column .class-grid-row:nth-child(1) .class-grid-item:nth-child(3) {
+    background: rgba(var(--color-default-blue), .7);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.class-grid-column .class-grid-row:nth-child(2) .class-grid-item:nth-child(1) {
+    background: rgba(var(--color-default-purple), .7);
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.class-grid-column .class-grid-row:nth-child(2) .class-grid-item:nth-child(2) {
+    background: rgba(var(--color-default-green), .7);
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.class-grid-item-name {
+    display: block;
+    word-break: break-word;
+    font-size: 2rem;
+    line-height: 1.5em;
+    /* line-height: 1.3em; */
+    font-weight: normal;
+    /* letter-spacing: 0.006em; */
+}
+.class-grid-item-upcoming {
+    font-size: 1.3rem;
+    display: block;
+}
+
+.container-default {
+    margin: 1rem 2.5rem 3rem 2.5rem;
+}
+
 .suitam-logo {
     margin-right: 8px;
     max-width: 64px;
