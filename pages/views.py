@@ -108,7 +108,7 @@ def view_calendar(request):
             updated.append(x)
         return " ".join(updated)
     
-    return render(request, 'overview.html', {
+    return render(request, 'calendar.html', {
         'user': user_information,
         'classes': list(map(correct_capitalisation, user_classes))
     })
