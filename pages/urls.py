@@ -11,6 +11,7 @@ urlpatterns = [
     path('auth/logout/', views.view_user_logout, name='Auth.Logout'),
     path('profile/', views.view_user_profile, name='UserProfile'),
     path('overview/', views.view_overview, name='Overview'),
+    path('calendar/', views.view_calendar, name='Calendar'),
     path('api/class/resources/', views.view_class_resources, name='API.ClassResources'),
     path('api/dashboard/data/', views.api_dashboard_data, name='API.DashboardData'),
     path('api/user/parents/', views.api_user_parents, name='API.DashboardData'),
