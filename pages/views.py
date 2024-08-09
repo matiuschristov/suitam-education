@@ -79,6 +79,41 @@ def view_overview(request):
     })
 
 @require_authentication
+def view_calendar(request):
+    user_information = intranet.user_information(request)
+    user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
+    
+    user_class_resources = intranet.class_resources(request)
+    user_classes = list()
+    for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
+        class_name = user_class.get('SubjectDescription').lower()
+        if class_name.endswith('assembly'):
+            continue;
+        elif class_name.endswith('pastoral care'):
+            continue;
+        user_classes.append(class_name)
+
+    def correct_capitalisation(subject):
+        subject = subject.split(' ')
+        del subject[0:2]
+        updated = list()
+        keepLowerCase = ['and', 'at']
+        for x in subject:
+            if x == 'pe':
+                x = x.upper()
+            elif x == 'it' or x == 'it:':
+                x = x.upper()
+            elif not [match for match in keepLowerCase if x in match]:
+                x = x.title()
+            updated.append(x)
+        return " ".join(updated)
+    
+    return render(request, 'overview.html', {
+        'user': user_information,
+        'classes': list(map(correct_capitalisation, user_classes))
+    })
+
+@require_authentication
 def view_user_profile(request):
     return render(request, 'user.html', {
         'user': intranet.user_information(request)
