@@ -63,129 +63,28 @@
                         <div class="container-calendar-guide"></div>
                         <div class="container-calendar-guide"></div>
                     </div>
-                    <div class="container-calendar-columns">
-                        <div class="container-calendar-column">
-                            <div class="container-calendar-event" id="drag-element-1">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-orange));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">08:20 - 09:10</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Mentor</span>
-                                    <span class="container-calendar-event-teacher">Ms. Koutoulogenis</span>
-                                </div>
+                    {% for day in timetable %}
+                    <div class="container-calendar-column">
+                        {% for period in day %}
+                        <div class="container-calendar-event" data-time="{{ period.startTime.0 }},{{ period.startTime.1 }}" style="background-color: rgba(var(--color-default-blue), .2);">
+                            <div class="container-calendar-event-color-wrapper">
+                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
                             </div>
-                            <!-- <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-yellow));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">09:10 - 10:00</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Religion and Society</span>
-                                    <span class="container-calendar-event-teacher">Ms. Mercer</span>
-                                </div>
+                            <div>
+                                <span class="container-calendar-event-time">{{ period.startTime.0 }}:{{ period.startTime.1 }} - {{ period.endTime.0 }}:{{ period.endTime.1 }}</span>
                             </div>
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-yellow));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">10:00 - 10:50</span>
+                            <div>
+                                <div class="container-calendar-event-name-wrapper">
+                                    <span class="container-calendar-event-name">{{ period.code }}</span><span class="container-calendar-event-location">{{ period.room }}</span>
                                 </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Religion and Society</span>
-                                    <span class="container-calendar-event-teacher">Ms. Mercer</span>
-                                </div>
-                            </div>
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-teal));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">11:25 - 12:15</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">English</span>
-                                    <span class="container-calendar-event-teacher">Ms. Montero</span>
-                                </div>
-                            </div>
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-teal));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">12:15 - 13:05</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">English</span>
-                                    <span class="container-calendar-event-teacher">Ms. Montero</span>
-                                </div>
-                            </div>
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-purple));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">13:40 - 14:30</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Programming</span>
-                                    <span class="container-calendar-event-teacher">Mr. Perry</span>
-                                </div>
-                            </div>
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-purple));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">14:30 - 15:20</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Programming</span>
-                                    <span class="container-calendar-event-teacher">Mr. Perry</span>
-                                </div>
+                                <span class="container-calendar-event-teacher">{{ period.teacher }}</span>
                             </div>
                         </div>
-                        <div class="container-calendar-column">
-                            <div class="container-calendar-event">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-orange));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">08:20 - 09:10</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Mentor</span>
-                                    <span class="container-calendar-event-teacher">Ms. Koutoulogenis</span>
-                                </div>
-                            </div> -->
-                        </div>
-                        <div class="container-calendar-column">
-                            <div class="container-calendar-event" id="drag-element-2">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-orange));"></div>
-                                <div>
-                                    <span class="container-calendar-event-time">08:20 - 09:10</span>
-                                </div>
-                                <div>
-                                    <span class="container-calendar-event-name">Mentor</span>
-                                    <span class="container-calendar-event-teacher">Ms. Koutoulogenis</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container-calendar-column"></div>
-                        <div class="container-calendar-column"></div>
+                        {% endfor %}
                     </div>
+                    {% endfor %}
                 </div>
             </div>
-            <!-- {% for class in classes %}
-            <span class="class-grid-item-name">{{ class }}</span>
-            {% endfor %} -->
-            <!-- <div class="class-grid-column">
-                <div class="class-grid-row">
-                    {% for class in classes|slice:"0:3" %}
-                    <div class="class-grid-item">
-                        <span class="class-grid-item-upcoming">Today</span>
-                        <span class="class-grid-item-name">{{ class.name }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="class-grid-row">
-                    {% for class in classes|slice:"3:5" %}
-                    <div class="class-grid-item">
-                        <span class="class-grid-item-upcoming">Today</span>
-                        <span class="class-grid-item-name">{{ class.name }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div> -->
         </div>
         <script src="{% static 'suitam.js' %}"></script>
     </body>
