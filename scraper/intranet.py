@@ -3,9 +3,10 @@ import urllib.parse
 from html.parser import HTMLParser
 import json
 import time
+from datetime import datetime
 
 def login(username: str, password: str):
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
+    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=10)
     connection.request('GET', '/Login/Default.aspx')
     response = connection.getresponse()
     print("Status: {} and reason: {}".format(response.status, response.reason))
@@ -132,6 +133,26 @@ def class_resources(request) -> dict:
 
     response = connection.getresponse()
     # print("Status: {} and reason: {}".format(response.status, response.reason))
+    data = json.loads(response.read()).get('d')
+    return data
+
+def user_timetable(request, date = datetime.utcnow()) -> dict:
+    # https://intranet.aquinas.vic.edu.au/Default.asmx/GetTimetable
+    # week_timetable = [];
+    # for day in enumerate(7)
+    date_current = date.isoformat(timespec='milliseconds') + 'Z';
+    # date_current = datetime.utcnow().isoformat(timespec='milliseconds') + 'Z';
+    # date_current = datetime(2024, 8, 8).date().isoformat(timespec='milliseconds') + 'Z';
+    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
+    connection_data = json.dumps({"selectedDate":date_current,"selectedGroup":None})
+    connection.request('POST', '/Default.asmx/GetTimetable', body=connection_data, headers={
+        'Content-Length': len(connection_data),
+        'Content-Type': 'application/json',
+        'Cookie': request.headers.get('Cookie'),
+        'User-Agent': 'SuitamBot/1.0'
+    })
+
+    response = connection.getresponse()
     data = json.loads(response.read()).get('d')
     return data
 
