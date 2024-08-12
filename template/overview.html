@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+        {% include "global/head.html" %}
+        <title>Suitam</title>
+    </head>
+
+    <body>
+        {% include "global/header.html" with page_title="Overview" %}
+        <div class="container-default">
+            <div class="container-calendar" style="width: 100%; max-width: 400px; max-height: calc(110px * 7);">
+                <div class="container-calendar-time">
+                    <div class="container-calendar-time-wrapper"><span>0:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>1:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>2:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>3:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>4:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>5:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>6:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>7:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>8:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>9:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>10:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>11:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>12:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>13:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>14:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>15:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>16:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>17:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>18:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>19:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>20:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>21:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>22:00</span></div>
+                    <div class="container-calendar-time-wrapper"><span>23:00</span></div>
+                </div>
+                <div class="container-calendar-events">
+                    <div class="container-calendar-guide-wrapper">
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                        <div class="container-calendar-guide"></div>
+                    </div>
+                    <div class="container-calendar-columns">
+                        <div class="container-calendar-column" style="width: 100%;">
+                            {% for period in timetable %}
+                            <div class="class-grid-item">
+                                <div class="container-calendar-event" style="top: {{ period.position }}px;" data-scroll="{{ period.position }}">
+                                    <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
+                                    <div>
+                                        <span class="container-calendar-event-time">08:20 - 09:10</span>
+                                    </div>
+                                    <div>
+                                        <span class="container-calendar-event-name">{{ period.Classes.0.TimeTableClass }}</span>
+                                        <span class="container-calendar-event-teacher">{{ period.Classes.0.TeacherName }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'suitam.js' %}"></script>
+    </body>
+
+</html>
