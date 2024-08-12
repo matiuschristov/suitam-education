@@ -24,3 +24,19 @@ def delete_cookie(response, key):
         key,
         domain=settings.SESSION_COOKIE_DOMAIN,
     )
+
+def class_correct_capitalisation(subject):
+    subject = subject.lower().split(' ')
+    del subject[0:2]
+    updated = list()
+    keepLowerCase = ['and', 'at']
+    for x in subject:
+        if x == 'pe':
+            x = x.upper()
+        elif x == 'it' or x == 'it:':
+            # x = x.upper()
+            continue;
+        elif not [match for match in keepLowerCase if x in match]:
+            x = x.title()
+        updated.append(x)
+    return " ".join(updated)
