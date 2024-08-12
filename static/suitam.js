@@ -1,8 +1,23 @@
-for (const element of document.querySelectorAll('.container-calendar-event')) {
-    dragElement(element);
+for (const elmnt of document.querySelectorAll('.container-calendar-event')) {
+    dragElement(elmnt);
+    [hour, minute] = elmnt.getAttribute('data-time').split(',');
+    setEventTime(hour, minute, elmnt);    
     // dragElement(document.getElementById("drag-element-1"));
 }
 // dragElement(document.getElementById("drag-element-2"));
+
+function setEventTime(hour, minute, elmnt) {
+    position = (hour * 105) + (minute * 1.75)
+    elmnt.setAttribute('data-scroll', position);
+    elmnt.style.top = position + "px";
+}
+
+let currentTimeElmnt = document.querySelector('.container-calendar-current-time');
+let currentTime = new Date();
+setEventTime(currentTime.getHours(), currentTime.getMinutes(), currentTimeElmnt);
+
+// setEventTime(8, 20, document.getElementById('drag-element-1'));
+// setEventTime(8, 20, document.getElementById('drag-element-2'));
 
 function dragElement(elmnt) {
     console.log(elmnt.offsetTop, 'topOffset')
@@ -51,7 +66,6 @@ function dragElement(elmnt) {
         // console.log(Math.round((elmnt.offsetTop - pos2) / 110));
         let prev = elmnt.getAttribute('data-scroll') ? elmnt.getAttribute('data-scroll') : 0;
         prev = parseInt(prev);
-        elmnt.setAttribute('data-scroll', prev - pos2);
         prevValue = prev - pos2;
         // scroll_pos = elmnt.getAttribute('data-scroll');
         // scroll_pos_set = elmnt.offsetTop - pos2;
@@ -60,10 +74,12 @@ function dragElement(elmnt) {
         if (elmnt.offsetTop - pos2 < 0) {
             return;
         }
+
+        elmnt.setAttribute('data-scroll', prevValue);
         //  else if (elmnt.offsetTop - pos2 )
         // console.log(scroll_pos);
-        let round = Math.round(parseInt(prevValue) / 110);
-        scroll_pos_set = round * 110;
+        let round = Math.round(parseInt(prevValue) / (5 * 1.75));
+        scroll_pos_set = round * (5 * 1.75);
         if (scroll_pos_set >= 0) {
             elmnt.style.top = scroll_pos_set + "px";
         }
