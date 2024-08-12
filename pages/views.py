@@ -7,6 +7,7 @@ from pages.decorators import *
 import json
 import random
 import urllib
+from datetime import datetime, timedelta
 
 def view_home(request):
     return redirect('/overview/')
@@ -23,7 +24,7 @@ def view_user_login(request):
         if not login_details.get('username')[0] or not login_details.get('password')[0]:
             return HttpResponse('Login requires username and password')
         auth = intranet.login(login_details.get('username')[0], login_details.get('password')[0])
-        auth_redirect = redirect('/overview/')
+        auth_redirect = redirect('/calendar/')
         if auth:
             for header in auth:
                 utils.set_cookie(auth_redirect, header, auth[header], days_expire=7)
@@ -48,69 +49,68 @@ def view_overview(request):
     user_information = intranet.user_information(request)
     user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
     
-    user_class_resources = intranet.class_resources(request)
-    user_classes = list()
-    for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
-        class_name = user_class.get('SubjectDescription').lower()
-        if class_name.endswith('assembly'):
-            continue;
-        elif class_name.endswith('pastoral care'):
-            continue;
-        user_classes.append(class_name)
+    # user_class_resources = intranet.class_resources(request)
+    # user_classes = list()
+    # for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
+    #     class_name = user_class.get('SubjectDescription').lower()
+    #     if class_name.endswith('assembly'):
+    #         continue;
+    #     elif class_name.endswith('pastoral care'):
+    #         continue;
+    #     user_classes.append(class_name)
 
-    def correct_capitalisation(subject):
-        subject = subject.split(' ')
-        del subject[0:2]
-        updated = list()
-        keepLowerCase = ['and', 'at']
-        for x in subject:
-            if x == 'pe':
-                x = x.upper()
-            elif x == 'it' or x == 'it:':
-                x = x.upper()
-            elif not [match for match in keepLowerCase if x in match]:
-                x = x.title()
-            updated.append(x)
-        return " ".join(updated)
-    
+    # user_periods = intranet.user_timetable(request).get('Periods')
+
+    # for x, period in enumerate(user_periods):
+    #     print(period)
+    #     user_periods[x]['position'] = int(x) * 109;
+        # should be 110 made 114 for temporary spacing
+
     return render(request, 'overview.html', {
-        'user': user_information,
-        'classes': list(map(correct_capitalisation, user_classes))
+        'user': user_information
+        # 'classes': list(map(correct_capitalisation, user_classes)),
+        # 'timetable': user_periods
     })
 
 @require_authentication
 def view_calendar(request):
     user_information = intranet.user_information(request)
     user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
-    
-    user_class_resources = intranet.class_resources(request)
-    user_classes = list()
-    for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
-        class_name = user_class.get('SubjectDescription').lower()
-        if class_name.endswith('assembly'):
-            continue;
-        elif class_name.endswith('pastoral care'):
-            continue;
-        user_classes.append(class_name)
 
-    def correct_capitalisation(subject):
-        subject = subject.split(' ')
-        del subject[0:2]
-        updated = list()
-        keepLowerCase = ['and', 'at']
-        for x in subject:
-            if x == 'pe':
-                x = x.upper()
-            elif x == 'it' or x == 'it:':
-                x = x.upper()
-            elif not [match for match in keepLowerCase if x in match]:
-                x = x.title()
-            updated.append(x)
-        return " ".join(updated)
+    timetable_week = []
+    for i in range(7):
+        timetable_date = datetime.today() + timedelta(days=i)
+        timetable_data = intranet.user_timetable(request, timetable_date)
+        timetable = []
+        for period in timetable_data.get('Periods'):
+            classes = period.get('Classes')
+            if len(classes) == 0:
+                continue;
+            timetable.append({
+                'code': classes[0].get('TimeTableClass'),
+                'name': utils.class_correct_capitalisation(classes[0].get('Description')),
+                'teacher': classes[0].get('TeacherName'),
+                'room': classes[0].get('Room'),
+                'id': classes[0].get('ClassID'),
+                'startTime': period.get('StartTime').split(':'),
+                'endTime': period.get('EndTime').split(':')
+            })
+        timetable_week.append(timetable)
     
+    
+    # user_class_resources = intranet.class_resources(request)
+    # user_classes = list()
+    # for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
+    #     class_name = user_class.get('SubjectDescription').lower()
+    #     if class_name.endswith('assembly'):
+    #         continue;
+    #     elif class_name.endswith('pastoral care'):
+    #         continue;
+    #     user_classes.append(class_name)
+
     return render(request, 'calendar.html', {
         'user': user_information,
-        'classes': list(map(correct_capitalisation, user_classes))
+        'timetable': timetable_week
     })
 
 @require_authentication
@@ -125,7 +125,6 @@ def view_class_resources(request):
     user_classes = list()
     for user_class in data.get('Types')[0].get('TimetabledClasses'):
         user_classes.append(user_class.get('SubjectDescription'))
-        # '\n'.join(user_classes)
     return HttpResponse(json.dumps(data), content_type='text/plain')
 
 @require_authentication
