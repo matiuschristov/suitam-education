@@ -9,9 +9,25 @@
 
     <body>
         {% include "global/header.html" with page_title="Overview" %}
-        <div class="container-default">
-            <div class="container-calendar" style="width: 100%; max-width: 400px; max-height: calc(110px * 7);">
-                <div class="container-calendar-time">
+        {% include "global/modal.html" %}
+        <div class="container-default" style="display: flex; gap: 2rem;">
+            <!-- <div class="container-status-wrapper">
+                <div class="container-status" style="background-color: rgba(var(--color-default-blue))">
+                    <div class="container-status-icon"></div>
+                    <span class="container-status-text">Sucessfully connected to the SIMON server</span>
+                </div>
+                <div class="container-status">
+                    <span class="container-status-icon" data-icon="lock.fill"></span>
+                    <svg class="container-status-icon" viewBox="0 0 20.4297 19.3262" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h20.4297v19.3262h-20.4297z" opacity="0"/><g fill-opacity=".85"><path d="m7.07031 19.3164h5.92769c1.2403 0 1.8262-.4004 2.4708-1.0937l3.789-4.1797c.6348-.7032.8106-1.1817.8106-2.1485v-4.46286c0-.97656-.1758-1.44531-.8106-2.14844l-3.789-4.17968c-.6446-.693364-1.2305-1.10352-2.4708-1.10352h-5.92769c-1.24023 0-1.83593.410156-2.4707 1.10352l-3.789063 4.17968c-.644531.70313-.810547 1.17188-.810547 2.14844v4.46286c0 .9668.166016 1.4453.810547 2.1485l3.789063 4.1797c.63477.6933 1.23047 1.0937 2.4707 1.0937zm.52735-1.5625c-.97657 0-1.25977-.2148-1.79688-.8008l-3.52539-3.8574c-.38086-.4297-.46875-.6738-.46875-1.3867v-4.09181c0-.71289.08789-.95703.46875-1.38672l3.52539-3.85742c.53711-.59571.82031-.80078 1.79688-.80078h4.87304c.9766 0 1.25.20507 1.7969.80078l3.5156 3.85742c.3906.42969.4785.67383.4785 1.38672v4.09181c0 .7129-.0879.957-.4785 1.3867l-3.5156 3.8574c-.5469.586-.8203.8008-1.7969.8008z"/><path d="m10.0293 11.416c.4687 0 .7422-.2637.7519-.7715l.1368-5.15622c.0097-.49805-.3809-.86914-.8985-.86914-.52731 0-.89841.36133-.88864.85938l.13672 5.16598c.00976.4981.2832.7715.76172.7715zm0 3.1738c.5664 0 1.0547-.4492 1.0547-1.0156s-.4785-1.0156-1.0547-1.0156c-.56641 0-1.04492.459-1.04492 1.0156 0 .5567.48828 1.0156 1.04492 1.0156z"/></g></svg>
+                    <span class="container-status-text">Established a secure connection to SIMON</span>
+                </div>
+            </div> -->
+            <div class="container-calendar container-calendar-day">
+                <div class="container-calendar-current-time"">
+                    <div>00:00</div>
+                    <div></div>
+                </div>
+                <div class=" container-calendar-time">
                     <div class="container-calendar-time-wrapper"><span>0:00</span></div>
                     <div class="container-calendar-time-wrapper"><span>1:00</span></div>
                     <div class="container-calendar-time-wrapper"><span>2:00</span></div>
@@ -63,26 +79,64 @@
                         <div class="container-calendar-guide"></div>
                         <div class="container-calendar-guide"></div>
                     </div>
-                    <div class="container-calendar-columns">
-                        <div class="container-calendar-column" style="width: 100%;">
-                            {% for period in timetable %}
-                            <div class="class-grid-item">
-                                <div class="container-calendar-event" style="top: {{ period.position }}px;" data-scroll="{{ period.position }}">
-                                    <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
-                                    <div>
-                                        <span class="container-calendar-event-time">08:20 - 09:10</span>
-                                    </div>
-                                    <div>
-                                        <span class="container-calendar-event-name">{{ period.Classes.0.TimeTableClass }}</span>
-                                        <span class="container-calendar-event-teacher">{{ period.Classes.0.TeacherName }}</span>
-                                    </div>
-                                </div>
+                    <div class="container-calendar-column">
+                        {% for period in timetable %}
+                        <div class="container-calendar-event" data-time-start="{{ period.startTime.0 }},{{ period.startTime.1 }}" data-time-end="{{ period.endTime.0 }},{{ period.endTime.1 }}" style="background-color: rgba(var(--color-default-blue), .2);">
+                            <div class="container-calendar-event-color-wrapper">
+                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
                             </div>
-                            {% endfor %}
+                            <div>
+                                <span class="container-calendar-event-time">{{ period.startTime.0 }}:{{ period.startTime.1 }} - {{ period.endTime.0 }}:{{ period.endTime.1 }}</span>
+                            </div>
+                            <div>
+                                <div class="container-calendar-event-name-wrapper">
+                                    <span class="container-calendar-event-name">{{ period.name }}</span><span class="container-calendar-event-location">{{ period.room }}</span>
+                                </div>
+                                <span class="container-calendar-event-teacher">{{ period.teacher }}</span>
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
+            <!-- <div class="container-user-settings">
+                <div class="container-user-settings-profile-wrapper">
+                    <div class="container-user-settings-profile">
+                        <div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.1"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.2"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.3"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.4"></span></div>
+                        </div>
+                        <div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.5"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.6"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.7"></span></div>
+                            <div class="container-user-settings-profile-option"><span class="container-user-profile-icon" data-icon="avatar.shape.8"></span></div>
+                        </div>
+                    </div>
+                    <div class="container-user-settings-profile">
+                        <div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-red), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-orange), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-yellow), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-green), .5);"><span class="container-user-profile-color"></span></div>
+                        </div>
+                        <div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-mint), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-teal), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-cyan), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-blue));"><span class="container-user-profile-color"></span></div>
+                        </div>
+                        <div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-indigo), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-purple), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-pink), .5);"><span class="container-user-profile-color"></span></div>
+                            <div class="container-user-settings-profile-option" style="background-color: rgba(var(--color-default-brown), .5);"><span class="container-user-profile-color"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
         </div>
         <script src="{% static 'suitam.js' %}"></script>
     </body>
