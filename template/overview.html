@@ -81,9 +81,9 @@
                     </div>
                     <div class="container-calendar-column">
                         {% for period in timetable %}
-                        <div class="container-calendar-event" data-time-start="{{ period.startTime.0 }},{{ period.startTime.1 }}" data-time-end="{{ period.endTime.0 }},{{ period.endTime.1 }}" style="background-color: rgba(var(--color-default-blue), .2);">
+                        <div class="container-calendar-event" data-time-start="{{ period.startTime.0 }},{{ period.startTime.1 }}" data-time-end="{{ period.endTime.0 }},{{ period.endTime.1 }}" style="background-color: rgba(var(--color-default-green), .2);">
                             <div class="container-calendar-event-color-wrapper">
-                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
+                                <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-green));"></div>
                             </div>
                             <div>
                                 <span class="container-calendar-event-time">{{ period.startTime.0 }}:{{ period.startTime.1 }} - {{ period.endTime.0 }}:{{ period.endTime.1 }}</span>
