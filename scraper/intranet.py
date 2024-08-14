@@ -3,6 +3,7 @@ import urllib.parse
 from html.parser import HTMLParser
 import json
 import time
+from pages import utils
 from datetime import datetime
 
 def login(username: str, password: str):
@@ -154,7 +155,22 @@ def user_timetable(request, date = datetime.utcnow()) -> dict:
 
     response = connection.getresponse()
     data = json.loads(response.read()).get('d')
-    return data
+    periods = []
+    for period in data.get('Periods'):
+        classes = period.get('Classes')
+        if len(classes) == 0:
+            continue;
+        periods.append({
+            'code': classes[0].get('TimeTableClass'),
+            'name': utils.class_correct_capitalisation(classes[0].get('Description')),
+            'teacher': classes[0].get('TeacherName'),
+            'room': classes[0].get('Room'),
+            'id': classes[0].get('ClassID'),
+            'startTime': period.get('StartTime').split(':'),
+            'endTime': period.get('EndTime').split(':')
+        })
+
+    return periods
 
 def user_photo(request) -> dict:
     if not request.headers.get('Cookie'):
