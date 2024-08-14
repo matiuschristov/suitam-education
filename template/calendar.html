@@ -9,8 +9,24 @@
 
     <body>
         {% include "global/header.html" with page_title="Calendar" %}
+        {% include "global/modal.html" %}
         <div class="container-default">
+            <div class="container-calendar-date">
+                <div class="placeholder-time"></div>
+                {% for day in timetable %}
+                    <div class="day-date{% if day.date_current %} current{% endif %}"><span>{{ day.day_name }}</span><span class="date-number">{{ day.date_num }}</span></div>
+                {% endfor %}
+                <!-- <div class="day-date current"><span>Mon</span><span class="date-number">1</span></div>
+                <div class="day-date"><span>Tue</span><span class="date-number">2</span></div>
+                <div class="day-date"><span>Wed</span><span class="date-number">3</span></div>
+                <div class="day-date"><span>Thu</span><span class="date-number">4</span></div>
+                <div class="day-date"><span>Fri</span><span class="date-number">5</span></div> -->
+            </div>
             <div class="container-calendar">
+                <div class="container-calendar-current-time"">
+                    <div>00:00</div>
+                    <div></div>
+                </div>
                 <div class="container-calendar-time">
                     <div class="container-calendar-time-wrapper"><span>0:00</span></div>
                     <div class="container-calendar-time-wrapper"><span>1:00</span></div>
@@ -65,8 +81,8 @@
                     </div>
                     {% for day in timetable %}
                     <div class="container-calendar-column">
-                        {% for period in day %}
-                        <div class="container-calendar-event" data-time="{{ period.startTime.0 }},{{ period.startTime.1 }}" style="background-color: rgba(var(--color-default-blue), .2);">
+                        {% for period in day.classes %}
+                        <div class="container-calendar-event" data-time-start="{{ period.startTime.0 }},{{ period.startTime.1 }}" data-time-end="{{ period.endTime.0 }},{{ period.endTime.1 }}" style="background-color: rgba(var(--color-default-blue), .1);">
                             <div class="container-calendar-event-color-wrapper">
                                 <div class="container-calendar-event-color" style="background-color: rgba(var(--color-default-blue));"></div>
                             </div>
@@ -75,7 +91,7 @@
                             </div>
                             <div>
                                 <div class="container-calendar-event-name-wrapper">
-                                    <span class="container-calendar-event-name">{{ period.code }}</span><span class="container-calendar-event-location">{{ period.room }}</span>
+                                    <span class="container-calendar-event-name">{{ period.name }}</span><span class="container-calendar-event-location">{{ period.room }}</span>
                                 </div>
                                 <span class="container-calendar-event-teacher">{{ period.teacher }}</span>
                             </div>
