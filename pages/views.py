@@ -4,10 +4,14 @@ from django.conf import settings
 from scraper import intranet
 from pages import utils
 from pages.decorators import *
+from pages.jsonstore import JSONStore
 import json
 import random
 import urllib
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
+db = JSONStore()
+
 
 def view_home(request):
     return redirect('/overview/')
@@ -44,73 +48,84 @@ def view_user_logout(request):
     utils.delete_cookie(response, 'adAuthCookie')
     return response
 
+def getCache(user: str, name: str, expires: int, data):
+    cache = {}
+    if db.exists('user-cache', user):
+        cache = db.get('user-cache', user);
+    cache_data = cache.get(name)
+    if not cache_data or cache_data.get('expires') < int(datetime.now().timestamp()):
+        cache_data = data()
+        cache[name] = { "expires": int((datetime.now() + timedelta(minutes=expires)).timestamp()), "data": cache_data}
+        db.save('user-cache', user, cache)
+        cache = cache_data
+    else:
+        print('got {} from cache\nuser: {}'.format(name, user))
+        cache = cache.get(name, {}).get('data')
+    return cache
+
 @require_authentication
 def view_overview(request):
     user_information = intranet.user_information(request)
     user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
+    user_guid = user_information.get('guid')
+
     
-    # user_class_resources = intranet.class_resources(request)
-    # user_classes = list()
-    # for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
-    #     class_name = user_class.get('SubjectDescription').lower()
-    #     if class_name.endswith('assembly'):
-    #         continue;
-    #     elif class_name.endswith('pastoral care'):
-    #         continue;
-    #     user_classes.append(class_name)
-
-    # user_periods = intranet.user_timetable(request).get('Periods')
-
-    # for x, period in enumerate(user_periods):
-    #     print(period)
-    #     user_periods[x]['position'] = int(x) * 109;
-        # should be 110 made 114 for temporary spacing
+    def overview_timetable():
+        return intranet.user_timetable(request)
+    overview_timetable_cache = getCache(user_guid, 'overview_timetable', 2, overview_timetable)
 
     return render(request, 'overview.html', {
-        'user': user_information
-        # 'classes': list(map(correct_capitalisation, user_classes)),
-        # 'timetable': user_periods
+        'user': user_information,
+        'timetable': overview_timetable_cache
     })
 
 @require_authentication
 def view_calendar(request):
     user_information = intranet.user_information(request)
     user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
+    user_guid = user_information.get('guid')
 
-    timetable_week = []
-    for i in range(7):
-        timetable_date = datetime.today() + timedelta(days=i)
-        timetable_data = intranet.user_timetable(request, timetable_date)
-        timetable = []
-        for period in timetable_data.get('Periods'):
-            classes = period.get('Classes')
-            if len(classes) == 0:
+    def calendar_timetable():
+        timetable_week = []
+        i = 0;
+        while len(timetable_week) < 5:
+            timetable_date = datetime.today() + timedelta(days=i, hours=10)
+            i += 1
+            if timetable_date.weekday() >= 5:
                 continue;
-            timetable.append({
-                'code': classes[0].get('TimeTableClass'),
-                'name': utils.class_correct_capitalisation(classes[0].get('Description')),
-                'teacher': classes[0].get('TeacherName'),
-                'room': classes[0].get('Room'),
-                'id': classes[0].get('ClassID'),
-                'startTime': period.get('StartTime').split(':'),
-                'endTime': period.get('EndTime').split(':')
+            timetable_data = intranet.user_timetable(request, timetable_date)
+            timetable_week.append({"classes": timetable_data, "day_name": timetable_date.strftime('%a'), "date_num": timetable_date.strftime('%-d'), "date_current": i == 1})
+        return timetable_week
+    calendar_timetable_cache = getCache(user_guid, 'calendar_timetable', 5, calendar_timetable)
+    
+    def calendar_classes():
+        user_class_resources = intranet.class_resources(request)
+        user_classes = list()
+        for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
+            class_name = user_class.get('SubjectDescription').lower()
+            if class_name.endswith('assembly'):
+                continue;
+            elif class_name.endswith('pastoral care'):
+                continue;
+            user_classes.append({
+                'class_id': user_class.get('ClassID'),
+                'class_code': user_class.get('ClassCode'),
+                'class_name': utils.class_correct_capitalisation(class_name),
+                'subject_id': user_class.get('SubjectID'),
+                'subject_code': user_class.get('SubjectCode'),
+                'task_count_assessment': user_class.get('AssessmentTaskCount'),
+                'task_count_derived': user_class.get('DerivedTaskCount'),
+                'task_count_classwork': user_class.get('ClassworkTaskCount'),
+                'task_count_overdue': user_class.get('OverdueTaskCount'),
+                'teachers': user_class.get('Teachers')
             })
-        timetable_week.append(timetable)
-    
-    
-    # user_class_resources = intranet.class_resources(request)
-    # user_classes = list()
-    # for user_class in user_class_resources.get('Types')[0].get('TimetabledClasses'):
-    #     class_name = user_class.get('SubjectDescription').lower()
-    #     if class_name.endswith('assembly'):
-    #         continue;
-    #     elif class_name.endswith('pastoral care'):
-    #         continue;
-    #     user_classes.append(class_name)
+        return user_classes
+    calendar_classes_cache = getCache(user_guid, 'calendar_classes', 5,  calendar_classes)
 
     return render(request, 'calendar.html', {
         'user': user_information,
-        'timetable': timetable_week
+        'timetable': calendar_timetable_cache,
+        'classes': calendar_classes_cache
     })
 
 @require_authentication
