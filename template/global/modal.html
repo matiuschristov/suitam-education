@@ -1,0 +1,41 @@
+<div class="modal-background-overlay"></div>
+<div class="modal-large">
+    <div>
+        <div class="modal-user-details">
+            <span class="modal-large-username">{{ user.name }}</span>
+            <div class="badge-beta-tester">
+                <span data-icon="checkmark.seal"></span>
+                <span class="">{{ user.userType }}</span>
+            </div>
+        </div>
+        <div class="modal-apps">
+            <a href="/overview"><div class="modal-app overview">
+                <div class="modal-app-icon">
+                    <span class="modal-app-icon-overview" data-icon="avatar.shape.7"></span>
+                </div>
+                <div class="modal-app-info calendar">
+                    <span class="modal-app-title">Overview</span>
+                    <span class="modal-app-desc">View important information on a sigle page</span>
+                </div>
+            </div></a>
+            <a href="/calendar"><div class="modal-app calendar">
+                <div class="modal-app-icon">
+                    <div>
+                        <span class="modal-app-icon-day">Wed</span>
+                        <span class="modal-app-icon-date">14</span>
+                    </div>
+                </div>
+                <div class="modal-app-info calendar">
+                    <span class="modal-app-title">Calendar</span>
+                    <span class="modal-app-desc">View your schedule in a unified and intuitive interface</span>
+                </div>
+            </div></a>
+        </div>
+    </div>
+    <div>
+        <div class="modal-action-buttons">
+            <a href="/auth/logout"><span class="button-default">Logout</span></a>
+            <span class="button-default" onclick="hideModalLarge()">Done</span>
+        </div>
+    </div>
+</div>
