@@ -65,6 +65,7 @@ def login(username: str, password: str):
     if authResponse.status == 302:
         for header in filter(lambda header: header[0] == 'Set-Cookie', authHeaders):
             authCookies[header[1].split('=')[0]] = header[1].split('=')[1].split('; ')[0]
+        del authCookies['ASP.NET_SessionId']
         return authCookies
     else:
         return None
