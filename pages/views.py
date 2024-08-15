@@ -88,7 +88,7 @@ def view_calendar(request):
     def calendar_timetable():
         timetable_week = []
         i = 0;
-        while len(timetable_week) < 5:
+        while len(timetable_week) < 6:
             timetable_date = datetime.today() + timedelta(days=i, hours=10)
             i += 1
             if timetable_date.weekday() >= 5:
