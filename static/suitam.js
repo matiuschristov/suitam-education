@@ -70,12 +70,11 @@ function updateTime() {
     let currentTimeElmnt = document.querySelector('.container-calendar-current-time');
     let currentTime = new Date();
     currentTimeElmnt.children[0].innerText = `${currentTime.getHours()}:${currentTime.getMinutes().toString().padStart(2, '0')}`;
-    // setEventTime(currentTime.getHours(), currentTime.getMinutes(), currentTimeElmnt);
     setCurrentTimePos(currentTime.getHours(), currentTime.getMinutes(), currentTimeElmnt);
 }
 
 updateTime()
-// setInterval(updateTime, 1000);
+setInterval(updateTime, 1000);
 
 // console.log('cal scroll top', cal.scrollTop)
 
