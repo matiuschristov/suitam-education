@@ -40,10 +40,8 @@ def view_user_login(request):
     else:
         return render(request, 'login.html')
 
-@require_authentication
 def view_user_logout(request):
     response = redirect('/auth/login/')
-    utils.delete_cookie(response, 'ASP.NET_SessionId')
     utils.delete_cookie(response, 'adAuthCookie')
     return response
 
@@ -74,10 +72,9 @@ def apply_event_colors(guid, classes):
     return classes
 
 @require_authentication
-def view_overview(request):
-    user_information = intranet.user_information(request)
-    user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
-    user_guid = user_information.get('guid')
+def view_overview(request, user):
+    user['initals'] = "".join(list(map(lambda x: x[0], user.get('name').split(' '))))
+    user_guid = user.get('guid')
 
     
     def overview_timetable():
@@ -86,15 +83,14 @@ def view_overview(request):
     overview_timetable_cache = apply_event_colors(user_guid, overview_timetable_cache)
 
     return render(request, 'overview.html', {
-        'user': user_information,
+        'user': user,
         'timetable': overview_timetable_cache
     })
 
 @require_authentication
-def view_calendar(request):
-    user_information = intranet.user_information(request)
-    user_information['initals'] = "".join(list(map(lambda x: x[0], user_information.get('name').split(' '))))
-    user_guid = user_information.get('guid')
+def view_calendar(request, user):
+    user['initals'] = "".join(list(map(lambda x: x[0], user.get('name').split(' '))))
+    user_guid = user.get('guid')
 
     def calendar_timetable():
         timetable_week = []
@@ -136,15 +132,14 @@ def view_calendar(request):
     calendar_classes_cache = getCache(user_guid, 'calendar_classes', 5,  calendar_classes)
 
     return render(request, 'calendar.html', {
-        'user': user_information,
+        'user': user,
         'timetable': calendar_timetable_cache,
         'classes': calendar_classes_cache
     })
 
 @require_authentication
-def api_update_class_color(request):
-    user_information = intranet.user_information(request)
-    user_guid = user_information.get('guid')
+def api_update_class_color(request, user):
+    user_guid = user.get('guid')
     if not request.method == "POST":
         return HttpResponse(status=405)
     try:
@@ -168,13 +163,13 @@ def api_update_class_color(request):
     return HttpResponse(status=200)
 
 @require_authentication
-def view_user_profile(request):
+def view_user_profile(request, user):
     return render(request, 'user.html', {
-        'user': intranet.user_information(request)
+        'user': user
     })
 
 @require_authentication
-def view_class_resources(request):
+def view_class_resources(request, user):
     data = intranet.class_resources(request)
     user_classes = list()
     for user_class in data.get('Types')[0].get('TimetabledClasses'):
@@ -182,21 +177,19 @@ def view_class_resources(request):
     return HttpResponse(json.dumps(data), content_type='text/plain')
 
 @require_authentication
-def api_user_information(request):
+def api_user_information(request, user):
     return HttpResponse(json.dumps(intranet.user_information(request)), content_type='application/json')
 
 @require_authentication
-def api_user_photo(request):
-    return HttpResponse(intranet.user_photo(request), content_type='image/jpg')
+def api_user_photo(request, user):
+    return HttpResponse(intranet.user_photo(request, user.get('guid')), content_type='image/jpg')
 
 @require_authentication
-def api_dashboard_data(request):
-    data_user_information = intranet.user_information(request)
-    data_user_dashboard = intranet.user_dashboard_data(request, guidString=data_user_information.get('guid'))
+def api_dashboard_data(request, user):
+    data_user_dashboard = intranet.user_dashboard_data(request, guidString=user.get('guid'))
     return HttpResponse(json.dumps(data_user_dashboard), content_type='application/json')
 
 @require_authentication
-def api_user_parents(request):
-    data_user_information = intranet.user_information(request)
-    data_user_dashboard = intranet.user_dashboard_data(request, guidString=data_user_information.get('guid'))
+def api_user_parents(request, user):
+    data_user_dashboard = intranet.user_dashboard_data(request, guidString=user.get('guid'))
     return HttpResponse(json.dumps(data_user_dashboard.get('ParentLoginAccountData', {}).get('ParentLogins')), content_type='application/json')
