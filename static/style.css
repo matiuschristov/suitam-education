@@ -659,6 +659,7 @@ h6 {
 }
 
 .container-status-wrapper {
+    visibility: hidden;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -726,9 +727,17 @@ h6 {
     opacity: 0;
     /* transform: translate(0, -20px); */
     /* animation: alert-bounce 0s ease-in forwards; */
-    animation: alert-bounce 0.5s ease-in forwards;
+    
     /* animation-delay: 1s; */
     /* animation: alert-bounce 0.5s ease-in; */
+}
+
+.container-status.open {
+    animation: alert-bounce 0.5s ease-in forwards;
+}
+.container-status.close {
+    animation: alert-bounce 0.5s ease-in forwards;
+    animation-direction: reverse;
 }
 
 .modal-large.open {
