@@ -6,7 +6,7 @@ import time
 import socket
 from pages import utils
 from pages.exception import *
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def requestSuitam(host='intranet.aquinas.vic.edu.au', method=None, path=None, timeout=10, body=None, headers=dict(), authentication=None, connection=None):
     if not connection:
@@ -155,7 +155,7 @@ def class_resources(request) -> dict:
     (req and req.get('connection')).close()
     return data
 
-def user_timetable(request, date = datetime.utcnow()) -> dict:
+def user_timetable(request, date=datetime.utcnow() + timedelta(hours=10)) -> dict:
     date_current = date.isoformat(timespec='milliseconds') + 'Z';
     req = requestSuitam(
         method='POST',
@@ -186,7 +186,6 @@ def user_timetable(request, date = datetime.utcnow()) -> dict:
     return periods
 
 def user_photo(request, guid) -> dict:
-    print(guid)
     req = requestSuitam(
         method='GET',
         path='/WebHandlers/DisplayUserPhoto.ashx?GUID={}'.format(guid),
