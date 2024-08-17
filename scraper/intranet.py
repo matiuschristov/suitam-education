@@ -3,15 +3,41 @@ import urllib.parse
 from html.parser import HTMLParser
 import json
 import time
+import socket
 from pages import utils
+from pages.exception import *
 from datetime import datetime
 
+def requestSuitam(host='intranet.aquinas.vic.edu.au', method=None, path=None, timeout=10, body=None, headers=dict(), authentication=None, connection=None):
+    if not connection:
+        connection = http.client.HTTPSConnection(host, 443, timeout=timeout)
+    if not method or not path:
+        raise SuitamException('scraper.intranet.request: missing required keyword args', 'MISSING_REQUIRED_KEYWORD_ARG')
+    try:
+        req_headers = {
+            'User-Agent': 'SuitamBot/1.0',
+        }
+        if body:
+            req_headers['Content-Length'] = len(body)
+        if authentication:
+            req_headers['Cookie'] = authentication
+        req_headers.update(headers)
+        connection.request(method, path, body=body, headers=req_headers)
+        res = connection.getresponse()
+        if res.status == 401:
+            raise SuitamException('scraper.intranet.request: request failed you are not authenticated', 'FAILED_AUTH')
+        return {"response": res, "connection":connection};
+    except socket.timeout:
+        raise SuitamException('scraper.intranet.request: the connection timed out', 'HTTP_CONN_TIMEOUT')
+    finally:
+        if not connection:
+            connection.close()
+
 def login(username: str, password: str):
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=10)
-    connection.request('GET', '/Login/Default.aspx')
-    response = connection.getresponse()
-    print("Status: {} and reason: {}".format(response.status, response.reason))
-    data = response.read()
+    req = requestSuitam(method='GET', path='/Login/Default.aspx')
+    res = req and req.get('response')
+    data = res and res.read()
+    connection = req and req.get('connection')
 
     values_login = {
         '__VIEWSTATE': None,
@@ -49,113 +75,99 @@ def login(username: str, password: str):
 
     parser = IntranetParser()
     parser.feed(str(data))
-    data = urllib.parse.urlencode(values_login)
 
-    connection.request('POST', '/Login/Default.aspx', body=data, headers={
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': len(data),
-        'User-Agent': 'SuitamBot/1.0'
-    })
+    req = requestSuitam(method='POST', path='/Login/Default.aspx', body=urllib.parse.urlencode(values_login), connection=connection, headers={'Content-Type': 'application/x-www-form-urlencoded'})
+    res = req and req.get('response')
+    res_headers = res.getheaders()
+    connection.close()
 
-    authResponse = connection.getresponse()
-    authHeaders = authResponse.getheaders()
-
-    authCookies = dict()
-    
-    if authResponse.status == 302:
-        for header in filter(lambda header: header[0] == 'Set-Cookie', authHeaders):
-            authCookies[header[1].split('=')[0]] = header[1].split('=')[1].split('; ')[0]
-        del authCookies['ASP.NET_SessionId']
-        return authCookies
+    cookies = dict()
+    if res.status == 302:
+        for header in filter(lambda header: header[0] == 'Set-Cookie', res_headers):
+            cookies[header[1].split('=')[0]] = header[1].split('=')[1].split('; ')[0]
+        del cookies['ASP.NET_SessionId']
+        return cookies
     else:
         return None
     
-def user_personal_details(request) -> dict:
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = json.dumps({'studentID':'4972'})
-    connection.request('POST', '/WebModules/Profiles/Student/StudentProfiles.asmx/StudentProfileDetails', body=connection_data, headers={
-        'Content-Length': len(connection),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-    response = connection.getresponse()
-    data = json.loads(response.read()).get('d')
+def user_personal_details(request, id) -> dict:
+    req = requestSuitam(
+        method='POST',
+        path='/WebModules/Profiles/Student/StudentProfiles.asmx/StudentProfileDetails',
+        body=json.dumps({'studentID':id}),
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
     return data
 
 def user_dashboard_data(request, guidString: str) -> dict:
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = json.dumps({"guidString":guidString,"semester":None})
-    connection.request('POST', '/WebModules/Profiles/Student/GeneralInformation/StudentDashboard.aspx/GetDashboardData?{}'.format(time.time() * 1000), body=connection_data, headers={
-        'Content-Length': len(connection_data),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-    response = connection.getresponse()
-    data = json.loads(response.read()).get('d')
+    req = requestSuitam(
+        method='POST',
+        path='/WebModules/Profiles/Student/GeneralInformation/StudentDashboard.aspx/GetDashboardData?{}'.format(time.time() * 1000),
+        body=json.dumps({"guidString":guidString,"semester":None}),
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
     return data
 
-def user_navigation_menu(request) -> dict:
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = json.dumps({'studentID':'4972'})
-    connection.request('POST', '/WebModules/Profiles/Student/StudentProfiles.asmx/GetProfileNavigationMenuByStudentID', body=connection_data, headers={
-        'Content-Length': len(connection_data),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-    response = connection.getresponse()
-    data = json.loads(response.read()).get('d')
+def user_navigation_menu(request, id) -> dict:
+    req = requestSuitam(
+        method='POST',
+        path='/WebModules/Profiles/Student/StudentProfiles.asmx/GetProfileNavigationMenuByStudentID',
+        body=json.dumps({'studentID':id}),
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
     return data
     
 def user_information(request) -> dict:
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = '{}'
-    connection.request('POST', '/Default.asmx/UserInformation', body=connection_data, headers={
-        'Content-Length': len(connection_data),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-
-    response = connection.getresponse()
-    data = json.loads(response.read()).get('d')
+    req = requestSuitam(
+        method='POST',
+        path='/Default.asmx/UserInformation',
+        body='{}',
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
     return data
 
 def class_resources(request) -> dict:
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = json.dumps({"FileSeq":None,"UserID":None})
-    connection.request('POST', '/Default.asmx/GetClassResources', body=connection_data, headers={
-        'Content-Length': len(connection_data),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-
-    response = connection.getresponse()
-    # print("Status: {} and reason: {}".format(response.status, response.reason))
-    data = json.loads(response.read()).get('d')
+    req = requestSuitam(
+        method='POST',
+        path='/Default.asmx/GetClassResources',
+        body=json.dumps({"FileSeq":None,"UserID":None}),
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
     return data
 
 def user_timetable(request, date = datetime.utcnow()) -> dict:
-    # https://intranet.aquinas.vic.edu.au/Default.asmx/GetTimetable
-    # week_timetable = [];
-    # for day in enumerate(7)
     date_current = date.isoformat(timespec='milliseconds') + 'Z';
-    # date_current = datetime.utcnow().isoformat(timespec='milliseconds') + 'Z';
-    # date_current = datetime(2024, 8, 8).date().isoformat(timespec='milliseconds') + 'Z';
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection_data = json.dumps({"selectedDate":date_current,"selectedGroup":None})
-    connection.request('POST', '/Default.asmx/GetTimetable', body=connection_data, headers={
-        'Content-Length': len(connection_data),
-        'Content-Type': 'application/json',
-        'Cookie': request.headers.get('Cookie'),
-        'User-Agent': 'SuitamBot/1.0'
-    })
-
-    response = connection.getresponse()
-    data = json.loads(response.read()).get('d')
+    req = requestSuitam(
+        method='POST',
+        path='/Default.asmx/GetTimetable',
+        body=json.dumps({"selectedDate":date_current,"selectedGroup":None}),
+        headers={'Content-Type': 'application/json'},
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = json.loads(res.read()).get('d')
+    (req and req.get('connection')).close()
+    
     periods = []
     for period in data.get('Periods'):
         classes = period.get('Classes')
@@ -173,15 +185,14 @@ def user_timetable(request, date = datetime.utcnow()) -> dict:
 
     return periods
 
-def user_photo(request) -> dict:
-    if not request.headers.get('Cookie'):
-        raise Exception('Request cookie is required')
-
-    data_user = user_information(request)
-
-    connection = http.client.HTTPSConnection('intranet.aquinas.vic.edu.au', 443, timeout=50)
-    connection.request('GET', '/WebHandlers/DisplayUserPhoto.ashx?GUID={}'.format(data_user.get('guid')), body='{}', headers={'Cookie': request.headers.get('Cookie'), 'User-Agent': 'SuitamBot/1.0'})
-
-    response = connection.getresponse()
-    data = response.read()
+def user_photo(request, guid) -> dict:
+    print(guid)
+    req = requestSuitam(
+        method='GET',
+        path='/WebHandlers/DisplayUserPhoto.ashx?GUID={}'.format(guid),
+        authentication=request.headers.get('Cookie')
+    )
+    res = req and req.get('response')
+    data = res.read()
+    (req and req.get('connection')).close()
     return data
