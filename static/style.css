@@ -369,7 +369,7 @@ h6 {
 }
 
 .container-calendar-event {
-    background: rgba(var(--color-default-gray5));
+    background: rgba(var(--event-color), .1);
     border-radius: 15px;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
@@ -389,6 +389,19 @@ h6 {
     left: 0;
     width: calc(100% - 4px);
     margin-left: calc(4px / 2);
+    transition: background .25s ease-in-out;
+}
+
+.modal-event-color-preview-event {
+    background: rgba(var(--event-color), .1);
+    border-radius: 15px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 7px;
+    padding-left: 17px;
+    box-sizing: border-box;
+    position: relative;
+    transition: background .25s ease-in-out;
 }
 
 .container-calendar-event.unconfirmed {
@@ -410,6 +423,44 @@ h6 {
     background-color: rgba(var(--color-text), .4);
 } */
 
+.modal-event-color-select-wrapper {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.modal-event-color-select {
+    width: 20px;
+    height: 20px;
+    background: rgba(var(--event-color), .5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-event-color-select .modal-event-color-select-icon {
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.modal-event-color-select.selected .modal-event-color-select-icon {
+    opacity: 1;
+    max-width: 12px;
+    max-height: 12px;
+    width: 100%;
+    height: 100%;
+    fill: rgba(var(--color-text));
+}
+
+/* .modal-event-color-select:before {
+
+    font-size: 1.6rem;
+    font-family: 'IconLib';
+    content: "\e003";
+    color: black;   
+} */
+
 .container-calendar-event-color-wrapper {
     position: absolute;
     top: 0;
@@ -423,6 +474,61 @@ h6 {
     box-sizing: border-box;
 }
 
+.modal-event-color {
+    margin-top: 2rem;
+}
+
+.modal-event-color-preview-event-color-wrapper {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    width: 4px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 100%;
+}
+
+.modal-event-color-preview-event-color {
+    height: 100%;
+    border-radius: 10px;
+    width: 6px;
+    vertical-align: middle;
+    background: rgba(var(--event-color), .4);
+    transition: background .25s ease-in-out;
+}
+
+.modal-event-color-preview-details {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.modal-event-color-preview {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    flex-direction: column;
+}
+
+.modal-event-color-preview-event-text,
+.modal-event-color-preview-event-text2 {
+    background: rgba(var(--event-color), .05);
+    max-width: 70%;
+    height: 20px;
+    border-radius: 5px;
+    transition: background .25s ease-in-out;
+}
+
+.modal-event-color-preview-event-text2 {
+    margin-top: 8px;
+    max-width: 40%;
+    height: 15px;
+    border-radius: 5px;
+}
+
 .container-calendar-event-color {
     border-radius: 10px;
     height: 100%;
@@ -430,7 +536,8 @@ h6 {
     vertical-align: middle;
     /* padding-top: 5px; */
     /* padding-bottom: 5px; */
-    background-color: rgba(var(--color-text), .4);
+    background: rgba(var(--event-color));
+    transition: background .25s ease-in-out;
 }
 
 .container-calendar-event-time {
@@ -746,7 +853,8 @@ h6 {
     transition: opacity 0.5s ease-in-out;
 }
 
-.modal-large-username {
+.modal-large-username,
+.modal-event-title {
     font-size: 3rem;
     font-weight: 500;
     line-height: 1em;
@@ -785,8 +893,8 @@ a {
     /* background: linear-gradient(0deg, rgba(var(--color-text), .02) 0%, rgba(var(--color-text), .05) 100%); */
     padding: 0.5rem 0;
     border-radius: 1.5rem;
-    /* display: flex; */
-    /* flex-direction: column; */
+    display: flex;
+    flex-direction: column;
     text-align: center;
 }
 
@@ -868,7 +976,8 @@ a {
 .modal-action-buttons > a {
     display: inline-block;
 }
-.modal-action-buttons > a > .button-default {
+.modal-action-buttons > a > .button-default,
+#modal-event-details .modal-action-buttons .button-default:first-child {
     background: rgba(var(--color-text), .1);
     color: rgba(var(--color-light-text));
 }
@@ -878,6 +987,14 @@ a {
     box-sizing: border-box;
 }
 
+.modal-event-teacher {
+    line-height: 1.2em;
+}
+
+
+.modal-section-title {
+    color: rgba(var(--color-default-gray));
+}
 
 
 /* .container-calendar-events .container-calendar-column:last-child {

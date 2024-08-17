@@ -1,7 +1,7 @@
 for (const elmnt of document.querySelectorAll('.container-calendar-event')) {
     // dragElement(elmnt);
     [hour, minute] = elmnt.getAttribute('data-time-start').split(',');
-    setEventTime(hour, minute, elmnt);    
+    setEventTime(hour, minute, elmnt);
     // dragElement(document.getElementById("drag-element-1"));
 }
 // dragElement(document.getElementById("drag-element-2"));
@@ -14,14 +14,23 @@ function setEventTime(hour, minute, elmnt) {
     elmnt.style.top = position + "px";
 }
 
-const modalLarge = document.querySelector('.modal-large');
+const modals = {
+    user_details: document.querySelector('#modal-user-details'),
+    event_details: document.querySelector('#modal-event-details')
+}
 const modalOverlay = document.querySelector('.modal-background-overlay');
 
-function hideModalLarge() {
-    modalLarge.classList.add('close');
+function hideModalLarge(id) {
+    ele = modals[id]
+    if (id == 'open') {
+        ele = document.querySelector('.modal-large.open');
+        console.log(ele);
+    }
+    ele.classList.remove('open');
+    ele.classList.add('close');
     setTimeout(() => {
-        modalLarge.style.removeProperty('visibility');
-        modalLarge.classList.remove('close');
+        ele.style.removeProperty('visibility');
+        ele.classList.remove('close');
     }, 250);
     modalOverlay.style.opacity = '0%';
     setTimeout(() => {
@@ -29,17 +38,68 @@ function hideModalLarge() {
         modalOverlay.style.removeProperty('visibility');
     }, 500);
 }
-function showModalLarge() {
+function showModalLarge(id) {
+    ele = modals[id]
     if (modalOverlay.style.visibility == 'visible') {
         return;
     }
     modalOverlay.style.visibility = 'visible';
     modalOverlay.style.opacity = '100%';
-    modalLarge.style.visibility = 'visible';
-    modalLarge.classList.add('open');
-    setTimeout(() => {
-        modalLarge.classList.remove('open');
-    }, 250)
+    ele.style.visibility = 'visible';
+    ele.classList.add('open');
+}
+
+function updateClassColor(id, color) {
+    return new Promise((resolve, reject) => {
+        var http = new XMLHttpRequest();
+        http.open('POST', '/api/class/color/', true);
+        http.setRequestHeader('Content-type', 'application/json');
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                console.log(http);
+                resolve()
+            } else if (http.readyState == 4 && http.status != 200) {
+                reject(http.status)
+            }
+        }
+        http.send(JSON.stringify({
+            'id': id,
+            'color': color
+        }));
+    })
+}
+
+function select_color() {
+    let color_wrapper = document.querySelector('.modal-event-color-select-wrapper');
+    for (selected of color_wrapper.querySelectorAll('.selected')) {
+        selected.classList.remove('selected');
+    }
+    let event_preview = document.querySelector('.modal-event-color-preview-event');
+    event_preview.style.setProperty('--event-color', `var(--color-default-${this.getAttribute('data-color')})`)
+    // modal-event-color-preview-event
+    this.classList.add('selected');
+}
+
+function showEventDetails() {
+    let data = JSON.parse(this.getAttribute('data-json'));
+    select_color.call(document.querySelector(`.modal-event-color-select[data-color=${data.color}]`))
+    document.querySelector('.modal-event-title').innerText = data.name;
+    document.querySelector('.modal-event-teacher').innerText = data.teacher;
+    document.querySelector('#modal-event-details').setAttribute('data-json', this.getAttribute('data-json'));
+    showModalLarge('event_details');
+}
+
+function saveEventDetails() {
+    let selectedColor = document.querySelector('.modal-event-color-select.selected')
+    let selectedColorName = selectedColor.getAttribute('data-color');
+    let data = JSON.parse(document.querySelector('#modal-event-details').getAttribute('data-json'));
+    data.color = selectedColorName;
+    updateClassColor(data.id, selectedColorName);
+    for (const event of document.querySelectorAll(`[data-class-id="${data.id}"]`)) {
+        event.style.setProperty('--event-color', `var(--color-default-${selectedColorName})`)
+        event.setAttribute('data-json', JSON.stringify(data));
+    }
+    hideModalLarge('open');
 }
 
 // showModalLarge();
@@ -72,6 +132,7 @@ function updateTime() {
     currentTimeElmnt.children[0].innerText = `${currentTime.getHours()}:${currentTime.getMinutes().toString().padStart(2, '0')}`;
     setCurrentTimePos(currentTime.getHours(), currentTime.getMinutes(), currentTimeElmnt);
 }
+
 
 updateTime()
 setInterval(updateTime, 1000);

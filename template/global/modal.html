@@ -1,5 +1,5 @@
-<div class="modal-background-overlay" onclick="hideModalLarge()"></div>
-<div class="modal-large">
+<div class="modal-background-overlay" onclick="hideModalLarge('open')"></div>
+<div class="modal-large" id="modal-user-details">
     <div>
         <div class="modal-user-details">
             <span class="modal-large-username">{{ user.name }}</span>
@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="modal-apps">
-            <a href="/overview"><div class="modal-app overview">
+            <!-- <a href="/overview"><div class="modal-app overview">
                 <div class="modal-app-icon">
                     <span class="modal-app-icon-overview" data-icon="avatar.shape.7"></span>
                 </div>
@@ -17,7 +17,7 @@
                     <span class="modal-app-title">Overview</span>
                     <span class="modal-app-desc">View important information on a sigle page</span>
                 </div>
-            </div></a>
+            </div></a> -->
             <a href="/calendar"><div class="modal-app calendar">
                 <div class="modal-app-icon">
                     <span class="modal-app-icon-day">Wed</span>
@@ -33,7 +33,50 @@
     <div>
         <div class="modal-action-buttons">
             <a href="/auth/logout"><span class="button-default">Logout</span></a>
-            <span class="button-default" onclick="hideModalLarge()">Done</span>
+            <span class="button-default" onclick="hideModalLarge('open')">Done</span>
+        </div>
+    </div>
+</div>
+<div class="modal-large" id="modal-event-details">
+    <div>
+        <div class="modal-event-details">
+            <span class="modal-event-title">Event name</span>
+            <div class="modal-event-teacher text-size-normal">teacher</div>
+        </div>
+        <div class="modal-event-color">
+            <!-- <span class="modal-section-title text-size-normal">Subject Colour</span> -->
+            <div class="modal-event-color-preview">
+                <div class="modal-event-color-preview-event">
+                    <div class="modal-event-color-preview-event-color-wrapper">
+                        <div class="modal-event-color-preview-event-color"></div>
+                    </div>
+                    <div class="modal-event-color-preview-details">
+                        <div class="modal-event-color-preview-event-text"></div>
+                        <div class="modal-event-color-preview-event-text2"></div>
+                    </div>
+                </div>
+                <div class="modal-event-color-select-wrapper">
+                    <div data-color="gray" class="modal-event-color-select selected" style="--event-color: var(--color-default-gray);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="brown" class="modal-event-color-select" style="--event-color: var(--color-default-brown);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="red" class="modal-event-color-select" style="--event-color: var(--color-default-red);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="orange" class="modal-event-color-select" style="--event-color: var(--color-default-orange);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="yellow" class="modal-event-color-select" style="--event-color: var(--color-default-yellow);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="green" class="modal-event-color-select" style="--event-color: var(--color-default-green);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="mint" class="modal-event-color-select" style="--event-color: var(--color-default-mint);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="teal" class="modal-event-color-select" style="--event-color: var(--color-default-teal);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="cyan" class="modal-event-color-select" style="--event-color: var(--color-default-cyan);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="blue" class="modal-event-color-select" style="--event-color: var(--color-default-blue);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="indigo" class="modal-event-color-select" style="--event-color: var(--color-default-indigo);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="purple" class="modal-event-color-select" style="--event-color: var(--color-default-purple);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                    <div data-color="pink" class="modal-event-color-select" style="--event-color: var(--color-default-pink);" onclick="select_color.call(this)"><svg class="modal-event-color-select-icon" viewBox="0 0 14.6729 14.0137" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h14.6729v14.0137h-14.6729z" opacity="0"/><path d="m5.63477 14.0137c.56152 0 1.00097-.2149 1.30371-.669l7.06542-10.80564c.2197-.32715.3076-.63965.3076-.92773 0-.766603-.5761-1.328127-1.3672-1.328127-.542 0-.8789.19043-1.2109.712891l-6.13281 9.702106-3.12989-3.91597c-.30273-.36621-.63476-.53223-1.09863-.53223-.791015 0-1.37207.57129-1.37207 1.34766 0 .34668.107422.64941.400391.99121l3.959959 4.81443c.35156.4199.75195.6104 1.27442.6104z"/></svg></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="modal-action-buttons">
+            <span class="button-default" onclick="saveEventDetails()">Update</span>
+            <span class="button-default" onclick="hideModalLarge('open')">Done</span>
         </div>
     </div>
 </div>

@@ -63,6 +63,17 @@ def getCache(user: str, name: str, expires: int, data):
         cache = cache.get(name, {}).get('data')
     return cache
 
+def apply_event_colors(guid, classes):
+    settings = dict()
+    if db.exists('user', guid):
+        settings = db.get('user', guid)
+    for period in classes:
+        period['color'] = settings.get('classes') and settings.get('classes').get(str(period.get('id'))) and settings.get('classes').get(str(period.get('id'))).get('color')
+        if not period.get('color'):
+            period['color'] = 'gray'
+        period['data'] = json.dumps(period)
+    return classes
+
 @require_authentication
 def view_overview(request):
     user_information = intranet.user_information(request)
@@ -71,8 +82,9 @@ def view_overview(request):
 
     
     def overview_timetable():
-        return intranet.user_timetable(request)
+        return intranet.user_timetable(request, datetime.today() + timedelta(days=3))
     overview_timetable_cache = getCache(user_guid, 'overview_timetable', 2, overview_timetable)
+    overview_timetable_cache = apply_event_colors(user_guid, overview_timetable_cache)
 
     return render(request, 'overview.html', {
         'user': user_information,
@@ -91,13 +103,14 @@ def view_calendar(request):
         while len(timetable_week) < 6:
             timetable_date = datetime.today() + timedelta(days=i)
             i += 1
-            print(timetable_date)
             if timetable_date.weekday() >= 5:
                 continue;
             timetable_data = intranet.user_timetable(request, timetable_date)
             timetable_week.append({"classes": timetable_data, "day_name": timetable_date.strftime('%a'), "date_num": timetable_date.strftime('%-d'), "date_current": i == 1})
         return timetable_week
     calendar_timetable_cache = getCache(user_guid, 'calendar_timetable', 5, calendar_timetable)
+    for day in calendar_timetable_cache:
+        day['classes'] = apply_event_colors(user_guid, day.get('classes'))
     
     def calendar_classes():
         user_class_resources = intranet.class_resources(request)
@@ -128,6 +141,33 @@ def view_calendar(request):
         'timetable': calendar_timetable_cache,
         'classes': calendar_classes_cache
     })
+
+@require_authentication
+def api_update_class_color(request):
+    user_information = intranet.user_information(request)
+    user_guid = user_information.get('guid')
+    if not request.method == "POST":
+        return HttpResponse(status=405)
+    try:
+        request_data = json.loads(request.body.decode('utf-8'))
+        class_id = request_data.get('id')
+        if not class_id:
+            return HttpResponse(status=400)
+        settings = dict()
+        if db.exists('user', user_guid):
+            settings = db.get('user', user_guid)
+        classes = settings.get('classes')
+        if not classes:
+            classes = dict()
+        if not classes.get(class_id):
+            classes[class_id] = dict()
+        classes[class_id]['color'] = request_data['color']
+        settings['classes'] = classes
+        print(settings)
+        db.save('user', user_guid, settings)
+    except:
+        print('An exception occurred')
+    return HttpResponse(status=200)
 
 @require_authentication
 def view_user_profile(request):

@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/dashboard/data/', views.api_dashboard_data, name='API.DashboardData'),
     path('api/user/parents/', views.api_user_parents, name='API.DashboardData'),
     path('api/user/information/', views.api_user_information, name='API.UserInformation'),
+    path('api/class/color/', views.api_update_class_color, name='API.ClassColor'),
     re_path('api/user/photo/', views.api_user_photo, name='API.UserPhoto')
 ]
 
