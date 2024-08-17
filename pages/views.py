@@ -3,25 +3,21 @@ from django.http import HttpResponse
 from django.conf import settings
 from scraper import intranet
 from pages import utils
+from pages.cache import *
 from pages.decorators import *
-from pages.jsonstore import JSONStore
+from pages.exception import *
+from pages.jsonstore import db
 import json
-import random
 import urllib
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
-db = JSONStore()
-
-def view_home(request):
+def home(request):
     return redirect('/calendar/')
 
-def view_test(request):
-    return render(request, 'test.html')
-
-def view_test_color_scheme(request):
+def test_color_scheme(request):
     return render(request, 'color-scheme.html')
 
-def view_user_login(request):
+def user_login(request):
     if request.POST:
         login_details = urllib.parse.parse_qs(request.body.decode("utf-8"))
         if not login_details.get('username')[0] or not login_details.get('password')[0]:
@@ -33,54 +29,27 @@ def view_user_login(request):
                 utils.set_cookie(auth_redirect, header, auth[header], days_expire=7)
             return auth_redirect
         else:
-            # print('authentication failed')
             return redirect('/auth/login')
     if request.COOKIES.get('ASP.NET_SessionId') and request.COOKIES.get('adAuthCookie'):
         return HttpResponse('You are already logged in.')
     else:
         return render(request, 'login.html')
 
-def view_user_logout(request):
+@require_authentication
+def user_logout(request, user):
     response = redirect('/auth/login/')
     utils.delete_cookie(response, 'adAuthCookie')
     return response
 
-def getCache(user: str, name: str, expires: int, data):
-    cache = {}
-    if db.exists('user-cache', user):
-        cache = db.get('user-cache', user);
-    cache_data = cache.get(name)
-    if not cache_data or cache_data.get('expires') < int(datetime.now().timestamp()):
-        cache_data = data()
-        cache[name] = { "expires": int((datetime.now() + timedelta(minutes=expires)).timestamp()), "data": cache_data}
-        db.save('user-cache', user, cache)
-        cache = cache_data
-    else:
-        # print('got {} from cache\nuser: {}'.format(name, user))
-        cache = cache.get(name, {}).get('data')
-    return cache
-
-def apply_event_colors(guid, classes):
-    settings = dict()
-    if db.exists('user', guid):
-        settings = db.get('user', guid)
-    for period in classes:
-        period['color'] = settings.get('classes') and settings.get('classes').get(str(period.get('id'))) and settings.get('classes').get(str(period.get('id'))).get('color')
-        if not period.get('color'):
-            period['color'] = 'gray'
-        period['data'] = json.dumps(period)
-    return classes
-
 @require_authentication
-def view_overview(request, user):
+def app_overview(request, user):
     user['initals'] = "".join(list(map(lambda x: x[0], user.get('name').split(' '))))
     user_guid = user.get('guid')
-
     
     def overview_timetable():
-        return intranet.user_timetable(request, datetime.today() + timedelta(days=3))
+        return intranet.user_timetable(request)
     overview_timetable_cache = getCache(user_guid, 'overview_timetable', 2, overview_timetable)
-    overview_timetable_cache = apply_event_colors(user_guid, overview_timetable_cache)
+    overview_timetable_cache = utils.event_colors(user_guid, overview_timetable_cache)
 
     return render(request, 'overview.html', {
         'user': user,
@@ -88,7 +57,7 @@ def view_overview(request, user):
     })
 
 @require_authentication
-def view_calendar(request, user):
+def app_calendar(request, user):
     user['initals'] = "".join(list(map(lambda x: x[0], user.get('name').split(' '))))
     user_guid = user.get('guid')
 
@@ -96,7 +65,7 @@ def view_calendar(request, user):
         timetable_week = []
         i = 0;
         while len(timetable_week) < 6:
-            timetable_date = datetime.today() + timedelta(days=i)
+            timetable_date = datetime.utcnow() + timedelta(days=i,hours=10)
             i += 1
             if timetable_date.weekday() >= 5:
                 continue;
@@ -105,7 +74,7 @@ def view_calendar(request, user):
         return timetable_week
     calendar_timetable_cache = getCache(user_guid, 'calendar_timetable', 5, calendar_timetable)
     for day in calendar_timetable_cache:
-        day['classes'] = apply_event_colors(user_guid, day.get('classes'))
+        day['classes'] = utils.event_colors(user_guid, day.get('classes'))
     
     def calendar_classes():
         user_class_resources = intranet.class_resources(request)
@@ -163,13 +132,13 @@ def api_update_class_color(request, user):
     return HttpResponse(status=200)
 
 @require_authentication
-def view_user_profile(request, user):
+def user_profile(request, user):
     return render(request, 'user.html', {
         'user': user
     })
 
 @require_authentication
-def view_class_resources(request, user):
+def class_resources(request, user):
     data = intranet.class_resources(request)
     user_classes = list()
     for user_class in data.get('Types')[0].get('TimetabledClasses'):
