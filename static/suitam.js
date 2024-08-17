@@ -147,7 +147,7 @@ function setCurrentTimePos(hour, minute, elmnt) {
     elmnt.setAttribute('data-scroll', position);
     elmnt.style.top = position + "px";
 }
-cal.scrollTop = 108 * new Date().getHours();
+cal.scrollTop = (108 * (new Date().getHours()-1));
 // console.log('cal scroll height', cal.scrollHeight)
 
 let currentDate = new Date();
