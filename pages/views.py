@@ -12,9 +12,8 @@ from datetime import datetime, timedelta, timezone
 
 db = JSONStore()
 
-
 def view_home(request):
-    return redirect('/overview/')
+    return redirect('/calendar/')
 
 def view_test(request):
     return render(request, 'test.html')
@@ -34,7 +33,7 @@ def view_user_login(request):
                 utils.set_cookie(auth_redirect, header, auth[header], days_expire=7)
             return auth_redirect
         else:
-            print('authentication failed')
+            # print('authentication failed')
             return redirect('/auth/login')
     if request.COOKIES.get('ASP.NET_SessionId') and request.COOKIES.get('adAuthCookie'):
         return HttpResponse('You are already logged in.')
@@ -59,7 +58,7 @@ def getCache(user: str, name: str, expires: int, data):
         db.save('user-cache', user, cache)
         cache = cache_data
     else:
-        print('got {} from cache\nuser: {}'.format(name, user))
+        # print('got {} from cache\nuser: {}'.format(name, user))
         cache = cache.get(name, {}).get('data')
     return cache
 
@@ -163,7 +162,6 @@ def api_update_class_color(request):
             classes[class_id] = dict()
         classes[class_id]['color'] = request_data['color']
         settings['classes'] = classes
-        print(settings)
         db.save('user', user_guid, settings)
     except:
         print('An exception occurred')
