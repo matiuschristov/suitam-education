@@ -1,5 +1,7 @@
 from django.conf import settings
+from pages.jsonstore import db
 import datetime
+import json
 
 def set_cookie(response, key, value, days_expire=7):
     if days_expire is None:
@@ -40,3 +42,14 @@ def class_correct_capitalisation(subject):
             x = x.title()
         updated.append(x)
     return " ".join(updated)
+
+def event_colors(guid, classes):
+    settings = dict()
+    if db.exists('user', guid):
+        settings = db.get('user', guid)
+    for period in classes:
+        period['color'] = settings.get('classes') and settings.get('classes').get(str(period.get('id'))) and settings.get('classes').get(str(period.get('id'))).get('color')
+        if not period.get('color'):
+            period['color'] = 'gray'
+        period['data'] = json.dumps(period)
+    return classes
