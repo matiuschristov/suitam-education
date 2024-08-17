@@ -103,6 +103,36 @@ function saveEventDetails() {
     hideModalLarge('open');
 }
 
+function showStatus(message,icon, color) {
+    let status = document.querySelector('.container-status');
+    let statusWrapper = document.querySelector('.container-status-wrapper');
+    statusWrapper.style.visibility = 'visible'
+    status.style.backgroundColor = `rgba(var(--color-default-${color}))`;
+    status.classList.add('open');
+    status.querySelector('.container-status-text').innerText = message;
+    status.querySelector('.container-status-icon').setAttribute('data-icon', icon);
+}
+// function hideStatus() {
+//     let status = document.querySelector('.container-status');
+//     // let statusWrapper = document.querySelector('.container-status-wrapper');
+//     status.classList.add('close');
+//     setTimeout(() => {
+//         status.classList.remove('open');
+//         statusWrapper.style.visibility = 'hidden'
+//     }, 1000);
+// }
+// setTimeout(() => {
+//     hideStatus()
+// }, 1000)
+
+// USERNAME-PASSSWORD-INCORRECT
+const urlParams = new URLSearchParams(window.location.search);
+const myParam = urlParams.get('code');
+// print(myParam)
+if (myParam == 'USERNAME-PASSSWORD-INCORRECT') {
+    showStatus('Incorrect username or password please try again', 'exclamationmark.octagon', 'red');
+}
+
 // showModalLarge();
 // setTimeout(() => {
 //     hideModalLarge();
