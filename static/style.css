@@ -497,7 +497,7 @@ h6 {
     border-radius: 10px;
     width: 6px;
     vertical-align: middle;
-    background: rgba(var(--event-color), .4);
+    background: rgba(var(--event-color));
     transition: background .25s ease-in-out;
 }
 
