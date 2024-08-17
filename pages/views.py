@@ -29,7 +29,7 @@ def user_login(request):
                 utils.set_cookie(auth_redirect, header, auth[header], days_expire=7)
             return auth_redirect
         else:
-            return redirect('/auth/login')
+            return redirect('/auth/login?code=USERNAME-PASSSWORD-INCORRECT')
     if request.COOKIES.get('ASP.NET_SessionId') and request.COOKIES.get('adAuthCookie'):
         return HttpResponse('You are already logged in.')
     else:
