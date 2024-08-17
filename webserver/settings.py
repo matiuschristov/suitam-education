@@ -128,7 +128,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Static root
-# STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = 'static_nginx'
 
 
 # Default primary key field type
