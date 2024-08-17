@@ -89,8 +89,9 @@ def view_calendar(request):
         timetable_week = []
         i = 0;
         while len(timetable_week) < 6:
-            timetable_date = datetime.today() + timedelta(days=i, hours=10)
+            timetable_date = datetime.today() + timedelta(days=i)
             i += 1
+            print(timetable_date)
             if timetable_date.weekday() >= 5:
                 continue;
             timetable_data = intranet.user_timetable(request, timetable_date)
