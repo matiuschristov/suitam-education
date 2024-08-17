@@ -14,3 +14,5 @@ class JSONStore():
         return os.path.isfile('/root/projects/suitam/data/{}/{}.json'.format(type, name))
 
 # os.rename('a.txt', 'b.kml')
+
+db = JSONStore()
