@@ -82,9 +82,10 @@ function select_color() {
 
 function showEventDetails() {
     let data = JSON.parse(this.getAttribute('data-json'));
-    select_color.call(document.querySelector(`.modal-event-color-select[data-color=${data.color}]`))
+    select_color.call(document.querySelector(`.modal-event-color-select[data-color=${data.color}]`));
     document.querySelector('.modal-event-title').innerText = data.name;
     document.querySelector('.modal-event-teacher').innerText = data.teacher;
+    document.querySelector('.modal-event-location').innerText = data.room;
     document.querySelector('#modal-event-details').setAttribute('data-json', this.getAttribute('data-json'));
     showModalLarge('event_details');
 }

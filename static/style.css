@@ -515,7 +515,7 @@ h6 {
 
 .modal-event-color-preview-event-text,
 .modal-event-color-preview-event-text2 {
-    background: rgba(var(--event-color), .05);
+    background: rgba(var(--event-color), .2);
     max-width: 70%;
     height: 20px;
     border-radius: 5px;
@@ -857,9 +857,9 @@ h6 {
 .modal-event-title {
     font-size: 3rem;
     font-weight: 500;
-    line-height: 1em;
+    line-height: 1.3em;
     display: block;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 a {
