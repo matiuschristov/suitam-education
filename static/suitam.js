@@ -133,10 +133,13 @@ const myParam = urlParams.get('code');
 switch (myParam) {
     case 'USERNAME-PASSSWORD-INCORRECT':
         showStatus('Incorrect username or password please try again', 'exclamationmark.octagon', 'red');
+        break;
     case 'SESSION-EXPIRED':
         showStatus('Your session has expired please sign in again', 'exclamationmark.octagon', 'red');
+        break;
     case 'AUTH-REQUIRED':
         showStatus('You must be logged in to visit that page', 'exclamationmark.octagon', 'red');
+        break;
 }
 
 // showModalLarge();
