@@ -18,7 +18,7 @@ def test_color_scheme(request):
     return render(request, 'color-scheme.html')
 
 def user_login(request):
-    if request.POST:
+    if request.method == 'POST':
         login_details = urllib.parse.parse_qs(request.body.decode("utf-8"))
         if not login_details.get('username')[0] or not login_details.get('password')[0]:
             return HttpResponse('Login requires username and password')
@@ -30,8 +30,8 @@ def user_login(request):
             return auth_redirect
         else:
             return redirect('/auth/login?code=USERNAME-PASSSWORD-INCORRECT')
-    if request.COOKIES.get('ASP.NET_SessionId') and request.COOKIES.get('adAuthCookie'):
-        return HttpResponse('You are already logged in.')
+    if request.COOKIES.get('adAuthCookie'):
+        return redirect('/calendar/')
     else:
         return render(request, 'login.html')
 
