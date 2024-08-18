@@ -47,6 +47,8 @@ def event_colors(guid, classes):
     settings = dict()
     if db.exists('user', guid):
         settings = db.get('user', guid)
+    if not settings:
+        settings = dict()
     for period in classes:
         period['color'] = settings.get('classes') and settings.get('classes').get(str(period.get('id'))) and settings.get('classes').get(str(period.get('id'))).get('color')
         if not period.get('color'):
