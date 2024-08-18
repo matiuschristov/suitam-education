@@ -13,14 +13,14 @@ def require_authentication(func):
     def wrapper(*args, **kwargs):
         request = args[0]
         if not request.COOKIES.get('adAuthCookie'):
-            return redirect('/auth/login/')
+            return redirect('/auth/login/?code=AUTH-REQUIRED')
         else:
             try:
                 user = intranet.user_information(request)
                 return func(*args, user)
             except SuitamException as e:
                 if (e.error_code == 'FAILED_AUTH'):
-                    res = redirect('/auth/login/')
+                    res = redirect('/auth/login/?code=SESSION-EXPIRED')
                     utils.delete_cookie(res, 'adAuthCookie')
                     return res
                 return e_500(error=e)
