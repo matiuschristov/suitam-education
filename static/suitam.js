@@ -129,8 +129,14 @@ function showStatus(message,icon, color) {
 const urlParams = new URLSearchParams(window.location.search);
 const myParam = urlParams.get('code');
 // print(myParam)
-if (myParam == 'USERNAME-PASSSWORD-INCORRECT') {
-    showStatus('Incorrect username or password please try again', 'exclamationmark.octagon', 'red');
+
+switch (myParam) {
+    case 'USERNAME-PASSSWORD-INCORRECT':
+        showStatus('Incorrect username or password please try again', 'exclamationmark.octagon', 'red');
+    case 'SESSION-EXPIRED':
+        showStatus('Your session has expired please sign in again', 'exclamationmark.octagon', 'red');
+    case 'AUTH-REQUIRED':
+        showStatus('You must be logged in to visit that page', 'exclamationmark.octagon', 'red');
 }
 
 // showModalLarge();
