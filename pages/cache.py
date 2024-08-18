@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 from pages.jsonstore import db
 
 def getCache(user: str, name: str, expires: int, data):
-    cache = {}
+    cache = dict()
     if db.exists('user-cache', user):
         cache = db.get('user-cache', user);
+    if not cache:
+        cache = dict()
     cache_data = cache.get(name)
     if not cache_data or cache_data.get('expires') < int(datetime.now().timestamp()):
         cache_data = data()
