@@ -6,8 +6,23 @@ import time
 import socket
 from pages import utils
 from pages.exception import *
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
+# function requestSuitam()
+    # Arguments
+        # host = the host for the request defaults to 'intranet.aquinas.vic.edu.au'
+        # method = the HTTP method for the request
+        # timeout = the timeout for the request defaults to 10
+        # body = the body for the request only applicable if method is POST,PUT or PATCH
+        # authentication = the cookie that stores the authentication token
+        # connection = reuse an existing connection rather than start a new one (performance) not required
+    # Description
+        # the default wrapper function for making requests to the Aquinas SIMON server
+    # Error Handling
+        # SuitamException MISSING_REQUIRED_KEYWORD_ARG = when keyword arguments method,path are not passed in
+        # SuitamException FAILED_AUTH = when the provided cookie authentication details are incorrect or expired
+        # SuitamException HTTP_CONN_TIMEOUT = when the server does not respond within timeout
+#
 def requestSuitam(host='intranet.aquinas.vic.edu.au', method=None, path=None, timeout=10, body=None, headers=dict(), authentication=None, connection=None):
     if not connection:
         connection = http.client.HTTPSConnection(host, 443, timeout=timeout)
@@ -33,6 +48,16 @@ def requestSuitam(host='intranet.aquinas.vic.edu.au', method=None, path=None, ti
         if not connection:
             connection.close()
 
+# function login()
+    # Arguments
+        # username = the username provided when user logs in
+        # password = the password provided when user logs in
+    # Description
+        # log into the aquinas SIMON server returns a dictionary of cookies including the authentication token
+    # Error Handling
+        # inherit requestSuitam()
+        # returns None if authentication failed
+#
 def login(username: str, password: str):
     req = requestSuitam(method='GET', path='/Login/Default.aspx')
     res = req and req.get('response')
@@ -57,23 +82,14 @@ def login(username: str, password: str):
             if value == input_value.get('name') and input_value.get('value'):
                 values_login[value] = input_value.get('value')
 
-    class IntranetParser(HTMLParser):
+    class IntranetLoginParser(HTMLParser):
         def handle_starttag(self, tag, attrs):
             if tag == 'input':
                 values = dict()
                 for attr in attrs:
                     values[attr[0]] = attr[1]
                 parse_input(values)
-
-        def handle_endtag(self, tag):
-            pass
-            # print("Encountered an end tag :", tag)
-
-        def handle_data(self, data):
-            pass
-            # print("Encountered some data  :", data)
-
-    parser = IntranetParser()
+    parser = IntranetLoginParser()
     parser.feed(str(data))
 
     req = requestSuitam(method='POST', path='/Login/Default.aspx', body=urllib.parse.urlencode(values_login), connection=connection, headers={'Content-Type': 'application/x-www-form-urlencoded'})
@@ -89,7 +105,16 @@ def login(username: str, password: str):
         return cookies
     else:
         return None
-    
+
+# function user_personal_details()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+        # id = the id of the user should be derrived from user_information()
+    # Description
+        # gets user personal details from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
 def user_personal_details(request, id) -> dict:
     req = requestSuitam(
         method='POST',
@@ -103,6 +128,15 @@ def user_personal_details(request, id) -> dict:
     (req and req.get('connection')).close()
     return data
 
+# function user_dashboard_data()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+        # guidString = the guid of the user should be derrived from user_information()
+    # Description
+        # gets dashboard data from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
 def user_dashboard_data(request, guidString: str) -> dict:
     req = requestSuitam(
         method='POST',
@@ -116,6 +150,15 @@ def user_dashboard_data(request, guidString: str) -> dict:
     (req and req.get('connection')).close()
     return data
 
+# function user_navigation_menu()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+        # id = the id of the user should be derrived from user_information()
+    # Description
+        # gets user personal details from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
 def user_navigation_menu(request, id) -> dict:
     req = requestSuitam(
         method='POST',
@@ -128,7 +171,16 @@ def user_navigation_menu(request, id) -> dict:
     data = json.loads(res.read()).get('d')
     (req and req.get('connection')).close()
     return data
-    
+
+# function user_information()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+    # Description
+        # gets user information from the Aquinas SIMON server
+        # data requested upon each authenticated request as it retrieves user details from auth cookie
+    # Error Handling
+        # inherit requestSuitam()
+#
 def user_information(request) -> dict:
     req = requestSuitam(
         method='POST',
@@ -142,6 +194,14 @@ def user_information(request) -> dict:
     (req and req.get('connection')).close()
     return data
 
+# function class_resources()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+    # Description
+        # gets user class resources which includes due,overdue,upcoming tasks from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
 def class_resources(request) -> dict:
     req = requestSuitam(
         method='POST',
@@ -155,7 +215,19 @@ def class_resources(request) -> dict:
     (req and req.get('connection')).close()
     return data
 
-def user_timetable(request, date=datetime.utcnow() + timedelta(hours=10)) -> dict:
+# function user_timetable()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+        # date = date object or None
+    # Description
+        # gets a user's timetable from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
+def user_timetable(request, date=None) -> dict:
+    if not date:
+        date = datetime.utcnow()
+        date = date + timedelta(days=1)
     date_current = date.isoformat(timespec='milliseconds') + 'Z';
     req = requestSuitam(
         method='POST',
@@ -185,10 +257,19 @@ def user_timetable(request, date=datetime.utcnow() + timedelta(hours=10)) -> dic
 
     return periods
 
-def user_photo(request, guid) -> dict:
+# function user_photo()
+    # Arguments
+        # request = the HttpResponse object which is supplied in the view function
+        # guidString = the guid of the user should be derrived from user_information()
+    # Description
+        # gets a buffer of the user's profile picture from the Aquinas SIMON server
+    # Error Handling
+        # inherit requestSuitam()
+#
+def user_photo(request, guidString) -> dict:
     req = requestSuitam(
         method='GET',
-        path='/WebHandlers/DisplayUserPhoto.ashx?GUID={}'.format(guid),
+        path='/WebHandlers/DisplayUserPhoto.ashx?GUID={}'.format(guidString),
         authentication=request.headers.get('Cookie')
     )
     res = req and req.get('response')
