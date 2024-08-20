@@ -227,7 +227,6 @@ def class_resources(request) -> dict:
 def user_timetable(request, date=None) -> dict:
     if not date:
         date = datetime.utcnow()
-        date = date + timedelta(days=1)
     date_current = date.isoformat(timespec='milliseconds') + 'Z';
     req = requestSuitam(
         method='POST',
@@ -244,6 +243,8 @@ def user_timetable(request, date=None) -> dict:
     for period in data.get('Periods'):
         classes = period.get('Classes')
         if len(classes) == 0:
+            continue;
+        if not classes[0].get('Room'):
             continue;
         periods.append({
             'code': classes[0].get('TimeTableClass'),

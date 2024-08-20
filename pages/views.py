@@ -104,14 +104,16 @@ def app_calendar(request, user):
         timetable_week = []
         i = 0;
         while len(timetable_week) < 6:
-            timetable_date = datetime.utcnow() + timedelta(days=i)
+            timetable_date = datetime.utcnow() + timedelta(days=i,hours=10)
             i += 1
             if timetable_date.weekday() >= 5:
                 continue;
-            timetable_data = intranet.user_timetable(request, timetable_date)
+            timetable_data = intranet.user_timetable(request, timetable_date - timedelta(hours=10))
+            print('day {}'.format(timetable_date.strftime('%-d')))
             timetable_week.append({"classes": timetable_data, "day_name": timetable_date.strftime('%a'), "date_num": timetable_date.strftime('%-d'), "date_current": i == 1})
         return timetable_week
-    calendar_timetable_cache = getCache(user_guid, 'calendar_timetable', 5, calendar_timetable)
+    calendar_timetable_cache = calendar_timetable()
+    # calendar_timetable_cache = getCache(user_guid, 'calendar_timetable', 5, calendar_timetable)
     for day in calendar_timetable_cache:
         day['classes'] = utils.event_colors(user_guid, day.get('classes'))
     
